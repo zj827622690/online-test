@@ -1,6 +1,7 @@
-package com.zj.user.component;
+package com.zj.onlinetest.component;
 
-import com.zj.user.utils.JwtTokenUtil;
+
+import com.zj.onlinetest.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +19,7 @@ public class UserRoleAuthentication {
     JwtTokenUtil jwtTokenUtil;
 
     public String getUsernameAndAutenticateUserRoleFromRequest(HttpServletRequest request,String role) {
-        String tokenHeader="Authorization";
-        String tokenHead="Bearer ";
-        String authHeader = request.getHeader( tokenHeader);
-        String authToken = authHeader.substring( tokenHead.length() ); // token is the part after "Bearer "
+        String authToken = request.getParameter( "token" );
 
         String userRole = jwtTokenUtil.getUserRoleFromToken( authToken );
         if (!Objects.equals( role, userRole )) {

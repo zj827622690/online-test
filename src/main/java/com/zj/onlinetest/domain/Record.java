@@ -9,7 +9,7 @@ import javax.persistence.Id;
  * @Description:
  */
 @Entity
-public class Connect {
+public class Record {
 
     @Id
     private String id;
@@ -26,7 +26,7 @@ public class Connect {
 
     private Long createTime;
 
-    public Connect() {
+    public Record() {
 
     }
 

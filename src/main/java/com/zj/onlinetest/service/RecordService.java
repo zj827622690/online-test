@@ -5,5 +5,5 @@ package com.zj.onlinetest.service;
  * @Date: 2019/4/17 14:23
  * @Description:
  */
-public interface ConnectService {
+public interface RecordService {
 }

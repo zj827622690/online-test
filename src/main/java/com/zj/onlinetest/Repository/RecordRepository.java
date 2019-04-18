@@ -1,6 +1,6 @@
 package com.zj.onlinetest.Repository;
 
-import com.zj.onlinetest.domain.Connect;
+import com.zj.onlinetest.domain.Record;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @Date: 2019/4/17 14:20
  * @Description:
  */
-public interface ConnectRepository extends JpaRepository<Connect,String>{
+public interface RecordRepository extends JpaRepository<Record,String>{
 }

@@ -1,6 +1,6 @@
 package com.zj.onlinetest.service.impl;
 
-import com.zj.onlinetest.service.ConnectService;
+import com.zj.onlinetest.service.RecordService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
  * @Description:
  */
 @Service
-public class ConnectServiceImpl implements ConnectService{
+public class RecordServiceImpl implements RecordService {
 }

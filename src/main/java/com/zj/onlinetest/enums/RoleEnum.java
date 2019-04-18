@@ -5,21 +5,17 @@ package com.zj.onlinetest.enums;
  * @Date: 2019/4/17 14:29
  * @Description:
  */
-public enum  CommonEnum {
+public enum RoleEnum {
 
-    FALSE(-1,"false"),
-    USERNAMEORPASSWORD_ERROR(-2,"用户名或密码错误"),
-
-
-    SUCCESS(1,"true"),
-    LOGINSUCCEES(2,"管理员登录成功"),
+    ROLE_ADMIN(1,"ROLE_ADMIN"),
+    ROLE_USER(2,"ROLE_USER")
     ;
 
 
     private Integer code;
     private String message;
 
-    CommonEnum(Integer code, String message) {
+    RoleEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
