@@ -25,6 +25,14 @@ public class ResultVoUtil {
         return resultVo;
     }
 
+    public static ResultVo<Object> successPage(String strMsg,Object object,Integer size) {
+        ResultVo<Object> resultVo=new ResultVo<>();
+        resultVo.setCode( size );
+        resultVo.setMsg( strMsg);
+        resultVo.setData( object );
+        return resultVo;
+    }
+
 
 
 }

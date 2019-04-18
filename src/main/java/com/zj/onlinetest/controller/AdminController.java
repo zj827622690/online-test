@@ -1,16 +1,12 @@
 package com.zj.onlinetest.controller;
 
 import com.zj.onlinetest.component.UserRoleAuthentication;
-import com.zj.onlinetest.domain.Question;
 import com.zj.onlinetest.domain.User;
 import com.zj.onlinetest.enums.CommonEnum;
 import com.zj.onlinetest.enums.RoleEnum;
 import com.zj.onlinetest.service.QuestService;
 import com.zj.onlinetest.service.UserService;
-import com.zj.onlinetest.utils.JwtTokenUtil;
-import com.zj.onlinetest.utils.RandomUtils;
-import com.zj.onlinetest.utils.ResultVoUtil;
-import com.zj.onlinetest.utils.TimeUtils;
+import com.zj.onlinetest.utils.*;
 import com.zj.onlinetest.vo.ResultVo;;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,14 +158,15 @@ public class AdminController {
                     CommonEnum.PERRMISSIONERROR.getMessage());
         }
 
-        List<User> lists=userService.selectAllUser( pageIndex );
+        List<User> lists=userService.selectAllUser();
         ArrayList<User> userArrayList = new ArrayList<>(  );
         for (User exc :lists) {
             if (!Objects.equals( exc.getRole(), RoleEnum.ROLE_ADMIN.getMessage() )) {
                 userArrayList.add( exc );
             }
         }
-        return ResultVoUtil.success( CommonEnum.GETUSEALLSUCCESS.getMessage(),userArrayList);
+        List list_new=ListPagingUtils.getPaging( userArrayList,pageIndex,5 );
+        return ResultVoUtil.successPage( CommonEnum.GETUSEALLSUCCESS.getMessage(),list_new,userArrayList.size());
     }
 
     /**
