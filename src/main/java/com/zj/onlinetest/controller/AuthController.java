@@ -48,6 +48,8 @@ public class AuthController {
                     CommonEnum.USERNAMEORPASSWORD_ERROR.getMessage());
         }
 
+//        if (user.get)
+
         //用jwt生成token
         String token = jwtTokenUtil.generateToken( user );
         return ResultVoUtil.success( CommonEnum.LOGINSUCCEES.getMessage(),token );

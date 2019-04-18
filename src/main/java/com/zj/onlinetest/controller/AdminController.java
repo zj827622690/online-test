@@ -7,6 +7,7 @@ import com.zj.onlinetest.enums.CommonEnum;
 import com.zj.onlinetest.enums.RoleEnum;
 import com.zj.onlinetest.service.QuestService;
 import com.zj.onlinetest.service.UserService;
+import com.zj.onlinetest.utils.JwtTokenUtil;
 import com.zj.onlinetest.utils.RandomUtils;
 import com.zj.onlinetest.utils.ResultVoUtil;
 import com.zj.onlinetest.utils.TimeUtils;
@@ -14,13 +15,12 @@ import com.zj.onlinetest.vo.ResultVo;;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -39,6 +39,9 @@ public class AdminController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     /**
      * 新增笔试用户
@@ -128,14 +131,72 @@ public class AdminController {
             str =str+questionId+"#";
         }
 
+        ArrayList<String> arrayList = new ArrayList<>(  );
+
         for (String userId:userIds) {
             User user = userService.selectOneById( userId );
             userService.changeUser( user,questionIds.length, str);
+            //用jwt生成token
+            String token = jwtTokenUtil.generateToken( user );
+
+            arrayList.add( CommonEnum.HTTPUSRL.getMessage()+"?token="+token );
         }
 
-        //todo
-        //链接
-        return ResultVoUtil.success( CommonEnum.PUBLISHWRITTENTESTSUCCESS.getMessage(),null );
+        return ResultVoUtil.success( CommonEnum.PUBLISHWRITTENTESTSUCCESS.getMessage(),arrayList );
     }
+
+    /**
+     * 获取所有笔试者（分页）
+     * @param request
+     * @param pageIndex
+     * @return
+     */
+    @GetMapping("/getUserList")
+    public ResultVo getUserList(HttpServletRequest request,
+                                @RequestParam("pageIndex") Integer pageIndex) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+
+        List<User> lists=userService.selectAllUser( pageIndex );
+        ArrayList<User> userArrayList = new ArrayList<>(  );
+        for (User exc :lists) {
+            if (!Objects.equals( exc.getRole(), RoleEnum.ROLE_ADMIN.getMessage() )) {
+                userArrayList.add( exc );
+            }
+        }
+        return ResultVoUtil.success( CommonEnum.GETUSEALLSUCCESS.getMessage(),userArrayList);
+    }
+
+    /**
+     * 获取所有笔试者的数量
+     * @param request
+     * @return
+     */
+    @GetMapping("/getAllUserTotal")
+    public ResultVo getAllUserTotal(HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+
+        List<User> lists=userService.selectAllUser();
+        ArrayList<User> userArrayList = new ArrayList<>(  );
+        for (User exc :lists) {
+            if (!Objects.equals( exc.getRole(), RoleEnum.ROLE_ADMIN.getMessage() )) {
+                userArrayList.add( exc );
+            }
+        }
+        return ResultVoUtil.success( CommonEnum.GETUSEALLTOTALSUCCESS.getMessage(),userArrayList.size());
+
+    }
+
 
 }

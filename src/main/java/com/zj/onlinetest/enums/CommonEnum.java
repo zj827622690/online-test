@@ -7,6 +7,8 @@ package com.zj.onlinetest.enums;
  */
 public enum  CommonEnum {
 
+    HTTPUSRL(0001,"http://localhost:8080/goingWrittenTest"),
+
     FALSE(-1,"false"),
     USERNAMEORPASSWORD_ERROR(-2,"用户名或密码错误"),
     PERRMISSIONERROR(-3,"权限不足"),
@@ -18,6 +20,8 @@ public enum  CommonEnum {
     ADDQUESTIONSUCCESS(3,"增加题库成功"),
     ADDNEWUSERSUCCESS(4,"新增笔试者成功"),
     PUBLISHWRITTENTESTSUCCESS(5,"发布笔试成功"),
+    GETUSEALLSUCCESS(6,"获取用户列表成功"),
+    GETUSEALLTOTALSUCCESS(7,"获取所有用户数量成功"),
     ;
 
 

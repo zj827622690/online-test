@@ -1,6 +1,10 @@
 package com.zj.onlinetest.service;
 
 import com.zj.onlinetest.domain.User;
+import org.springframework.data.domain.Pageable;
+
+import javax.jws.soap.SOAPBinding;
+import java.util.List;
 
 /**
  * @Auther: zj
@@ -18,5 +22,9 @@ public interface UserService {
     User selectOneById(String id);
 
     User changeUser(User user,Integer number, String questions);
+
+    List<User> selectAllUser(Integer pageIndex);
+
+    List<User> selectAllUser();
 
 }

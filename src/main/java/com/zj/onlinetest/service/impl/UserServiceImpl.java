@@ -4,8 +4,12 @@ import com.zj.onlinetest.Repository.UserRepository;
 import com.zj.onlinetest.domain.User;
 import com.zj.onlinetest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import java.util.List;
 
 /**
  * @Auther: zj
@@ -52,5 +56,16 @@ public class UserServiceImpl implements UserService{
         user.setQuestions( questions );
         userRepository.save( user );
         return user;
+    }
+
+    @Override
+    public List<User> selectAllUser(Integer pageIndex) {
+        Pageable pageable = PageRequest.of( pageIndex,5);
+        return userRepository.findAll( pageable ).getContent();
+    }
+
+    @Override
+    public List<User> selectAllUser() {
+        return userRepository.findAll();
     }
 }
