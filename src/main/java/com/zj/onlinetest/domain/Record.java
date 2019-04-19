@@ -30,6 +30,16 @@ public class Record {
 
     }
 
+    public Record(String id, String userId, String questionId, String answer, Long startTime, Long endTime, Long createTime) {
+        this.id = id;
+        this.userId = userId;
+        this.questionId = questionId;
+        this.answer = answer;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.createTime = createTime;
+    }
+
     public String getId() {
         return id;
     }

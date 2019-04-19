@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 /**
  * @Auther: zj
  * @Date: 2019/4/17 15:58
- * @Description:
+ * @Description: 拦截器config
  */
 @Configuration
 //2、创建一个Java类继承WebMvcConfigurerAdapter，并重写 addInterceptors 方法。

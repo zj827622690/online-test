@@ -19,7 +19,7 @@ import java.util.Objects;
 /**
  * @Auther: zj
  * @Date: 2019/4/17 16:49
- * @Description:
+ * @Description: 登录
  */
 @RestController
 public class AuthController {
@@ -47,8 +47,6 @@ public class AuthController {
             return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     CommonEnum.USERNAMEORPASSWORD_ERROR.getMessage());
         }
-
-//        if (user.get)
 
         //用jwt生成token
         String token = jwtTokenUtil.generateToken( user );

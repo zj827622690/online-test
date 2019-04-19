@@ -3,14 +3,13 @@ package com.zj.onlinetest.config;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Auther: zj
  * @Date: 2019/4/17 15:51
- * @Description:
+ * @Description: 拦截器
  */
 @Component
 //1、创建自己的拦截器类并实现 HandlerInterceptor 接口。
@@ -27,8 +26,6 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.sendRedirect( request.getContextPath()+"/error.html" );
             return false;
         }
-
-
         return true;
     }
 
@@ -44,7 +41,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     /**
      * 视图渲染之后的操作
-     *
      * 请求之后调用，不管抛不抛出异常都会被调用.参数中异常如果被异常处理器调用的话就不会传入到参数中．
      * */
     @Override

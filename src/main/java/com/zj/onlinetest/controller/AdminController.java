@@ -5,10 +5,11 @@ import com.zj.onlinetest.domain.Question;
 import com.zj.onlinetest.domain.User;
 import com.zj.onlinetest.enums.CommonEnum;
 import com.zj.onlinetest.enums.RoleEnum;
+import com.zj.onlinetest.service.CommonService;
 import com.zj.onlinetest.service.QuestService;
 import com.zj.onlinetest.service.UserService;
 import com.zj.onlinetest.utils.*;
-import com.zj.onlinetest.vo.ResultVo;;
+import com.zj.onlinetest.vo.ResultVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ import java.util.Objects;
 /**
  * @Auther: zj
  * @Date: 2019/4/17 17:30
- * @Description:
+ * @Description: 管理员相关业务
  */
 @RestController
 public class AdminController {
@@ -39,6 +40,9 @@ public class AdminController {
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    CommonService commonService;
 
     /**
      * 新增笔试用户
@@ -205,6 +209,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/getAllTestUser")
+    @CrossOrigin
     public ResultVo getAllTestUser(HttpServletRequest request) {
         String nowName = userRoleAuthentication.
                 getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
@@ -230,9 +235,51 @@ public class AdminController {
      * @return
      */
     @GetMapping("/getAllQuestions")
+    @CrossOrigin
     public ResultVo getAllQuestions() {
         List<Question> questionList = questService.selectAll();
         return ResultVoUtil.success( CommonEnum.GETALLQUESTIONSUCCESS.getMessage(),questionList );
+    }
+
+    /**
+     * 获取所有笔试题(分页)
+     * @param pageIndex
+     * @return
+     */
+    @GetMapping("/getAllQuestionsWithPage")
+    @CrossOrigin
+    public ResultVo getAllQuestionsWithPage(@RequestParam("page") Integer pageIndex) {
+        List<Question> questionList = questService.selectAll( pageIndex-1 );
+
+        return ResultVoUtil.successPage( CommonEnum.GETALLQUESTIONSUCCESS.getMessage(),
+                                         questionList.size(),questionList );
+    }
+
+    /**
+     * 回放
+     * @param userId
+     * @param questionId
+     * @param room
+     * @param request
+     * @return
+     */
+    @GetMapping("/playBack")
+    @CrossOrigin
+    public ResultVo playBack(@RequestParam("userId") String userId,
+                             @RequestParam("questionId") String questionId,
+                             @RequestParam("room") String room,
+                             HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+
+        commonService.playbackAnswer( userId,questionId,room);//异步
+
+        return ResultVoUtil.success(CommonEnum.PLAYBACKTESTSUCCESS.getMessage(),null);
     }
 
 

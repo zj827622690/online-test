@@ -5,9 +5,10 @@ import com.zj.onlinetest.domain.Question;
 import com.zj.onlinetest.service.QuestService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.xml.ws.Action;
 import java.util.List;
 
 
@@ -42,5 +43,11 @@ public class QuestServiceImpl implements QuestService{
     public List<Question> selectAll() {
         List<Question> questionList = questionRepository.findAll();
         return questionList;
+    }
+
+    @Override
+    public List<Question> selectAll(Integer pageIndex) {
+        Pageable pageable = PageRequest.of( pageIndex,5);
+        return questionRepository.findAll( pageable).getContent();
     }
 }

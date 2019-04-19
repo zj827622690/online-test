@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * @Auther: zj
- * @Date: 2018/12/22 12:51
- * @Description:
+ * @Date: 2019/4/17 12:51
+ * @Description: 消息生产者
  */
 @Component
 public class Sender {

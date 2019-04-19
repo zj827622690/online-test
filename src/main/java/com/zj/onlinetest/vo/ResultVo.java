@@ -13,7 +13,7 @@ public class ResultVo<T> {
     //具体内容
     private T data;
 
-    Integer count;
+    private Integer count;
 
     public Integer getCode() {
         return code;

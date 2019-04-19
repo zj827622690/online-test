@@ -2,6 +2,7 @@ package com.zj.onlinetest.service;
 
 import com.zj.onlinetest.domain.Question;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 /**
@@ -16,4 +17,6 @@ public interface QuestService {
     Question selectOneById(String id);
 
     List<Question> selectAll();
+
+    List<Question> selectAll(Integer pageIndex);
 }

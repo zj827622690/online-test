@@ -3,7 +3,7 @@ package com.zj.onlinetest.enums;
 /**
  * @Auther: zj
  * @Date: 2019/4/17 14:29
- * @Description:
+ * @Description: 常用枚举类
  */
 public enum  CommonEnum {
 
@@ -25,6 +25,7 @@ public enum  CommonEnum {
     GETUSEALLTOTALSUCCESS(7,"获取所有用户数量成功"),
     GETSELFQUESTIONSSUCCESS(8,"获取当前笔试者笔试题成功"),
     GETALLQUESTIONSUCCESS(9,"获取所有笔试题成功"),
+    PLAYBACKTESTSUCCESS(10,"开始回放"),
     ;
 
 

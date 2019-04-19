@@ -3,7 +3,7 @@ package com.zj.onlinetest.enums;
 /**
  * @Auther: zj
  * @Date: 2019/4/17 14:29
- * @Description:
+ * @Description: 规则枚举类
  */
 public enum RoleEnum {
 

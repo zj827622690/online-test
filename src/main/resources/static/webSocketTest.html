@@ -31,7 +31,7 @@
 
 频道号：<input id="room" type="text"/>
 <button onclick="conectWebSocket()">连接WebSocket</button>
-<button onclick="closeWebSocket()">断开连接</button>
+<button onclick="disconnect()">断开连接</button>
 <hr />
 
 <div id="message22"></div>
@@ -71,6 +71,10 @@
                   // console.log("websocket连接成功");
                   // console.log(txt);
                   document.getElementById('message').innerHTML += JSON.parse(txt.body)['content']+ '<br/>';
+                  // const sender = JSON.parse(message.body)['sender'];
+////                const language = JSON.parse(message.body)['language'];
+////                const content = JSON.parse(message.body)['content'];
+////                const type = JSON.parse(message.body)['type'];
               });
           });
 
@@ -88,10 +92,13 @@
             '/app/chat',
             {},
             JSON.stringify({
-                'sender': "wu",
                 'room': that.room,
-                'type': "000",
-                'content': message })
+                'type': "1",//1,2
+                'content': message,
+                'userId':"566072523",//小明
+                'questionId':"222299023",//题目1
+                'createTime':"",
+                 })
         );
 
     }
@@ -117,104 +124,28 @@
         });
     }
 
-//         this.stompClient.connect({}, function (frame) {
-//        that.stompClient.subscribe('/topic/' + that.room, (message) => {
-////                if (message.body) {
-////
-////                const sender = JSON.parse(message.body)['sender'];
-////                const language = JSON.parse(message.body)['language'];
-////                const content = JSON.parse(message.body)['content'];
-////                const type = JSON.parse(message.body)['type'];
-////
-////            }
-//          console.log("aaa");
-//      });
-//    });
+    function disconnect() {
 
+         //断开连接的方法
+        if (this.stompClient !== undefined) {
 
+            this.stompClient.disconnect();
+            alert("Disconnected");
+        }else{
+            alert("当前没有连接websocket")
+        }
+        this.stompClient = undefined;
         
+    }
 
 
-
-
-//        var nickname = document.getElementById("nickname").value;
-//        if(nickname===""){
-//            alert("请输入昵称");
-//            return;
-//        }
-//
-//        //判断当前浏览器是否支持WebSocket
-//        if ('WebSocket'in window) {
-//            websocket = new WebSocket("ws://localhost:8080/websocket/"+nickname);
-//        } else {
-//            alert('Not support websocket')
-//        }
-//
-//
-//
-//        //连接发生错误的回调方法
-//        websocket.onerror = function() {
-//            setMessageInnerHTML("error");
-//        };
-//
-//        //连接成功建立的回调方法
-//        websocket.onopen = function(event) {
-//            setMessageInnerHTML("Loc MSG: 成功建立连接");
-//        }
-//
-//        //接收到消息的回调方法
-//        websocket.onmessage = function(event) {
-//            setMessageInnerHTML(event.data);
-//        }
-//
-//        //连接关闭的回调方法
-//        websocket.onclose = function() {
-//            setMessageInnerHTML("Loc MSG:关闭连接");
-//        }
-//
-//        //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-//        window.onbeforeunload = function() {
-//            websocket.close();
-//        }
-   
-
-   
-
-
-    // //将消息显示在网页上
-    // function setMessageInnerHTML(innerHTML) {
-    //     document.getElementById('message').innerHTML += innerHTML + '<br/>';
-    // }
-
-    // //关闭连接
-    // function closeWebSocket() {
-    //     websocket.close();
-    // }
 
     window.onload = function(){
         this.getUserAllQuestions()
     }
 
-//    //发送消息
-//    function send() {
-//        var message = document.getElementById('text').value;
-//        websocket.send( message);
-//    }
-//    //发送消息
-//    function send() {
-//        //获取输入的文本信息进行发送
-//        var message = document.getElementById('text').value;
-//        var toUser = document.getElementById('toUser').value;
-//        var socketMsg = {msg:message,toUser:toUser};
-//        if(toUser == ''){
-//            //群聊.
-//            socketMsg.type = 0;
-//        }else{
-//            //单聊.
-//            socketMsg.type = 1;
-//        }
-//
-//        websocket.send(JSON.stringify(socketMsg));
-//    }
+
+
+
 </script>
 </html>

@@ -25,6 +25,8 @@ public interface UserService {
 
     List<User> selectAllUser(Integer pageIndex);
 
-    List<User> selectAllUser();
+    List<User> selectAllUser(
+
+    );
 
 }

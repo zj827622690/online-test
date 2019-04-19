@@ -24,7 +24,7 @@ import java.util.Objects;
 /**
  * @Auther: zj
  * @Date: 2019/4/18 10:06
- * @Description:
+ * @Description: 笔试者的相关操作
  */
 @RestController
 public class UserController
