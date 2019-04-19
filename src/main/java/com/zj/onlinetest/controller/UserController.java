@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -74,6 +75,24 @@ public class UserController
         }
 
         return ResultVoUtil.success(  CommonEnum.GETSELFQUESTIONSSUCCESS.getMessage(),questionArrayList);
+    }
+
+    /**
+     * 笔试者 获取自身用户信息
+     * @param request
+     * @return
+     */
+    @GetMapping("/getSelfInfo")
+    public ResultVo getSelfInfo(HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_USER.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+        User user =userService.selectOneByUsername( nowName );
+        return ResultVoUtil.success( CommonEnum.GETTESTUSERSELFINFOSUCCESS.getMessage(),user );
     }
 
 
