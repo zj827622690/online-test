@@ -12,6 +12,7 @@ import com.zj.onlinetest.utils.*;
 import com.zj.onlinetest.vo.ResultVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,11 @@ public class AdminController {
 
     @Autowired
     CommonService commonService;
+
+    @Value("${local.url}")
+    private String url;
+
+
 
     /**
      * 新增笔试用户
@@ -140,7 +146,7 @@ public class AdminController {
             //用jwt生成token
             String token = jwtTokenUtil.generateToken( user );
 
-            arrayList.add( CommonEnum.HTTPUSRL.getMessage()+"?token="+token );
+            arrayList.add( url+"static/admin/html/userExamConfirm.html"+"?token="+token );
         }
 
         return ResultVoUtil.success( CommonEnum.PUBLISHWRITTENTESTSUCCESS.getMessage(),arrayList );
@@ -171,7 +177,7 @@ public class AdminController {
                 userArrayList.add( exc );
             }
         }
-        List list_new=ListPagingUtils.getPaging( userArrayList,pageIndex,5 );
+        List list_new=ListPagingUtils.getPaging( userArrayList,pageIndex-1,5 );
 
         return ResultVoUtil.successPage( CommonEnum.GETUSEALLSUCCESS.getMessage(),userArrayList.size(),list_new);
     }

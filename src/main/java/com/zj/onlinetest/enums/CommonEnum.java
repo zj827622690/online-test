@@ -7,6 +7,8 @@ package com.zj.onlinetest.enums;
  */
 public enum  CommonEnum {
 
+
+
     HTTPUSRL(0001,"http://localhost:8080/goingWrittenTest"),
 
     FALSE(-1,"false"),

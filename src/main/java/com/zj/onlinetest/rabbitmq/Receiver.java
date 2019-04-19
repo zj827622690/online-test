@@ -56,10 +56,6 @@ public class Receiver {
             messagingTemplate.convertAndSend( destination, mqTask);
         }
 
-
-
-
-
     }
 
 }

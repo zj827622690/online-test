@@ -1,0 +1,28 @@
+﻿{
+	"code": 0,
+	"msg": "",
+	"data": [{
+		"id": "1",
+		"username": "小红小红小红小红小红小红小红",
+		"password": "698d51a19d8a121ce581499d7b701668",
+		"role": "ROLE_USER",
+		"limitTimes": 1,
+		"number": 2,
+		"questions": "#222299023#515176379#",
+		"startTime": null,
+		"endTime": null,
+		"createTime": 1555513561910
+	}, {
+		"id": "2",
+		"username": "小明小红小红小红小红",
+		"password": "698d51a19d8a121ce581499d7b701668",
+		"role": "ROLE_USER",
+		"limitTimes": 1,
+		"number": 2,
+		"questions": "#222299023#515176379#",
+		"startTime": null,
+		"endTime": null,
+		"createTime": 1555470194933
+	}],
+	"count": 2
+}

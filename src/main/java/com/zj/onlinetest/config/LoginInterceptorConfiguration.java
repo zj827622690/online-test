@@ -2,6 +2,7 @@ package com.zj.onlinetest.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -25,7 +26,16 @@ public class LoginInterceptorConfiguration implements WebMvcConfigurer {
         //如果interceptor中不注入redis或其他项目可以直接new
         //4、将拦截器对像手动添加到拦截器链中（在addInterceptors方法中添加）
         registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns( "/login" )
-                                                                        .excludePathPatterns("/test/**");
+                                                                        .excludePathPatterns("/test/**")
+                                                                        .excludePathPatterns( "/static/**" );
     }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler( "/static/**" ).
+                addResourceLocations( "classpath:/static/" );
+    }
+
+
 }
 

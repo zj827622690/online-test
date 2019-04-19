@@ -20,8 +20,6 @@ public class LoginInterceptor implements HandlerInterceptor {
      * */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        System.out.println("Interceptor preHandle");
-//        System.out.println( request.getParameter("token") );
         if (request.getParameter( "token" )==null) {
             response.sendRedirect( request.getContextPath()+"/error.html" );
             return false;
