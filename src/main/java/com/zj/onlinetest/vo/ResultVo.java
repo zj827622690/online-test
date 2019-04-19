@@ -13,6 +13,8 @@ public class ResultVo<T> {
     //具体内容
     private T data;
 
+    Integer count;
+
     public Integer getCode() {
         return code;
     }
@@ -35,5 +37,13 @@ public class ResultVo<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

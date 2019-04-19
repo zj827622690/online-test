@@ -13,6 +13,7 @@ public enum  CommonEnum {
     USERNAMEORPASSWORD_ERROR(-2,"用户名或密码错误"),
     PERRMISSIONERROR(-3,"权限不足"),
     PARAMERSERROR(-4,"参数校验不通过"),
+    USERHASWDTAKEEDTEST(-5,"您已经参加过笔试，不能再次参加"),
 
 
     SUCCESS(1,"true"),
@@ -22,6 +23,8 @@ public enum  CommonEnum {
     PUBLISHWRITTENTESTSUCCESS(5,"发布笔试成功"),
     GETUSEALLSUCCESS(6,"获取用户列表成功"),
     GETUSEALLTOTALSUCCESS(7,"获取所有用户数量成功"),
+    GETSELFQUESTIONSSUCCESS(8,"获取当前笔试者笔试题成功"),
+    GETALLQUESTIONSUCCESS(9,"获取所有笔试题成功"),
     ;
 
 

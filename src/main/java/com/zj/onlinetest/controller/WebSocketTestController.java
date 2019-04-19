@@ -1,5 +1,7 @@
 package com.zj.onlinetest.controller;
 
+import com.zj.onlinetest.rabbitmq.Sender;
+import com.zj.onlinetest.utils.JsonUtils;
 import com.zj.onlinetest.vo.RequestMessage;
 import com.zj.onlinetest.vo.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class WebSocketTestController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    Sender senderMQ;
 
     /**聊天室（单聊+多聊）
      *
@@ -41,6 +46,11 @@ public class WebSocketTestController {
         String type = HtmlUtils.htmlEscape(requestMessage.getType());
         String content = HtmlUtils.htmlEscape(requestMessage.getContent());
         ResponseMessage response = new ResponseMessage(sender, type, content);
+
+        System.out.println( requestMessage.getRoom() );
+        System.out.println( content );
+
+//        senderMQ.send( JsonUtils.objectToJson( mqTask  )  );
 
         messagingTemplate.convertAndSend(destination, response);
     }

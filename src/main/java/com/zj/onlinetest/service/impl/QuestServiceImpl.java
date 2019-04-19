@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.ws.Action;
+import java.util.List;
 
 
 /**
@@ -35,5 +36,11 @@ public class QuestServiceImpl implements QuestService{
     public Question selectOneById(String id) {
         Question question = questionRepository.findOneById( id );
         return question;
+    }
+
+    @Override
+    public List<Question> selectAll() {
+        List<Question> questionList = questionRepository.findAll();
+        return questionList;
     }
 }

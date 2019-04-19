@@ -2,8 +2,11 @@ package com.zj.onlinetest.controller;
 
 import com.zj.onlinetest.Repository.UserRepository;
 import com.zj.onlinetest.domain.User;
+import com.zj.onlinetest.rabbitmq.Sender;
+import com.zj.onlinetest.utils.JsonUtils;
 import com.zj.onlinetest.utils.RandomUtils;
 import com.zj.onlinetest.utils.TimeUtils;
+import com.zj.onlinetest.vo.MqTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +26,9 @@ public class TestController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    Sender sender;
 
     @GetMapping("/aaa")
     public String test() {
@@ -59,6 +65,16 @@ public class TestController {
         userRepository.save( user );
 
         return "插入用户记录成功！";
+    }
+
+    @GetMapping("/test/666")
+    public String adqwjj() {
+        MqTask mqTask = new MqTask();
+        mqTask.setData( "这是来自消息队列的消息1111" );
+        mqTask.setUid("666");
+
+        sender.send( JsonUtils.objectToJson( mqTask  ) );
+        return "111";
     }
 
 }

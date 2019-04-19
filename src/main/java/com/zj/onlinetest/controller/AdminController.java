@@ -1,6 +1,7 @@
 package com.zj.onlinetest.controller;
 
 import com.zj.onlinetest.component.UserRoleAuthentication;
+import com.zj.onlinetest.domain.Question;
 import com.zj.onlinetest.domain.User;
 import com.zj.onlinetest.enums.CommonEnum;
 import com.zj.onlinetest.enums.RoleEnum;
@@ -148,8 +149,9 @@ public class AdminController {
      * @return
      */
     @GetMapping("/getUserList")
+    @CrossOrigin
     public ResultVo getUserList(HttpServletRequest request,
-                                @RequestParam("pageIndex") Integer pageIndex) {
+                                @RequestParam("page") Integer pageIndex) {
         String nowName = userRoleAuthentication.
                 getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
 
@@ -166,7 +168,8 @@ public class AdminController {
             }
         }
         List list_new=ListPagingUtils.getPaging( userArrayList,pageIndex,5 );
-        return ResultVoUtil.successPage( CommonEnum.GETUSEALLSUCCESS.getMessage(),list_new,userArrayList.size());
+
+        return ResultVoUtil.successPage( CommonEnum.GETUSEALLSUCCESS.getMessage(),userArrayList.size(),list_new);
     }
 
     /**
@@ -175,6 +178,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/getAllUserTotal")
+    @CrossOrigin
     public ResultVo getAllUserTotal(HttpServletRequest request) {
         String nowName = userRoleAuthentication.
                 getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
@@ -193,6 +197,42 @@ public class AdminController {
         }
         return ResultVoUtil.success( CommonEnum.GETUSEALLTOTALSUCCESS.getMessage(),userArrayList.size());
 
+    }
+
+    /**
+     * 获取所有笔试者（不分页）
+     * @param request
+     * @return
+     */
+    @GetMapping("/getAllTestUser")
+    public ResultVo getAllTestUser(HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+
+        List<User> lists=userService.selectAllUser();
+        ArrayList<User> userArrayList = new ArrayList<>(  );
+        for (User exc :lists) {
+            if (!Objects.equals( exc.getRole(), RoleEnum.ROLE_ADMIN.getMessage() )) {
+                userArrayList.add( exc );
+            }
+        }
+
+        return ResultVoUtil.success( CommonEnum.GETUSEALLSUCCESS.getMessage(),userArrayList);
+    }
+
+    /**
+     * 获取所有笔试题
+     * @return
+     */
+    @GetMapping("/getAllQuestions")
+    public ResultVo getAllQuestions() {
+        List<Question> questionList = questService.selectAll();
+        return ResultVoUtil.success( CommonEnum.GETALLQUESTIONSUCCESS.getMessage(),questionList );
     }
 
 

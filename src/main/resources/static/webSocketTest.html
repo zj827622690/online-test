@@ -9,6 +9,13 @@
     <script src="js/stomp.min.js"></script>
     <!--<script type="text/javascript"></script>-->
 
+    <style>
+        #message22{
+            margin-top:40px;
+            border:1px solid gray;
+            padding:20px;
+        }
+    </style>
 
     <style>
         #message{
@@ -22,16 +29,18 @@
 
 <body>
 
-昵称：<input type="text" id="nickname"/>
+频道号：<input id="room" type="text"/>
 <button onclick="conectWebSocket()">连接WebSocket</button>
 <button onclick="closeWebSocket()">断开连接</button>
 <hr />
 
+<div id="message22"></div>
+
 
 <br />
-消息：<input id="text" type="text" />
-频道号：<input id="toUser" type="text" />
-<button onclick="send()">发送消息</button>
+做题区：<input id="text" type="text" />
+<!-- 频道号：<input id="toUser" type="text" /> -->
+<button onclick="sendMessage()">发送消息</button>
 <div id="message"></div>
 </body>
 
@@ -41,22 +50,75 @@
     var serverUrl = "http://localhost:8080/websocket";
 
     var room;//频道号
+
+
     var websocket = null;
 
-
+    //websocket连接
     function conectWebSocket(){
+
+        this.room = document.getElementById('room').value;//频道号
+
+        console.log(this.room);
 
         console.log(this.serverUrl);
 
         var socket = new SockJS(this.serverUrl);
         this.stompClient = Stomp.over(socket);
         var that = this;
-        this.stompClient.connect({}, function (frame) {
-            that.stompClient.subscribe('/topic/'+that.room ,function(txt) {
-                alert(txt);
-            });
+          this.stompClient.connect({}, function (frame) {
+              that.stompClient.subscribe('/topic/'+that.room ,function(txt) {
+                  // console.log("websocket连接成功");
+                  // console.log(txt);
+                  document.getElementById('message').innerHTML += JSON.parse(txt.body)['content']+ '<br/>';
+              });
+          });
 
-//            that.stompClient.subscribe('/topic/' + that.room, (message) => {
+
+     }
+
+     //发送消息
+    function sendMessage() {
+        //获取输入的文本信息进行发送
+        var message = document.getElementById('text').value;
+        // var room = document.getElementById('toUser').value;
+        var socketMsg = {msg:message,toUser:room};
+        var that = this
+        this.stompClient.send(
+            '/app/chat',
+            {},
+            JSON.stringify({
+                'sender': "wu",
+                'room': that.room,
+                'type': "000",
+                'content': message })
+        );
+
+    }
+
+    function getUserAllQuestions() {
+//        var formdata = new FormData(uploadForm);
+//        formdata.append("username",$("#username").val());
+        $.ajax({
+            type: "GET",
+            url:"http://localhost:8080/getSelfQuestions?token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLlsI_nuqIiLCJyb2xlIjoiUk9MRV9VU0VSIiwiY3JlYXRlZCI6MTU1NTU1MzEyNTU5NSwiZXhwIjoxNTU2MTU3OTI1fQ.gtCl8bP8fZpuLPUSAarfrbx627x6hk1vw9SrCSmdNPSLGmSZjcIlITcJVdMlRAUrqyutIAzDrtTXtwdh1k1JXw",
+            dataType:"json",
+            data:"",
+
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                console.log(data);
+                document.getElementById('message22').innerHTML += data.data[0].subject + '<br/>';
+            },
+            error: function (msg) {
+                console.log(msg);
+            }
+        });
+    }
+
+//         this.stompClient.connect({}, function (frame) {
+//        that.stompClient.subscribe('/topic/' + that.room, (message) => {
 ////                if (message.body) {
 ////
 ////                const sender = JSON.parse(message.body)['sender'];
@@ -65,11 +127,12 @@
 ////                const type = JSON.parse(message.body)['type'];
 ////
 ////            }
-//            console.log("aaa");
-//        });
+//          console.log("aaa");
+//      });
+//    });
 
 
-        });
+        
 
 
 
@@ -113,19 +176,23 @@
 //        window.onbeforeunload = function() {
 //            websocket.close();
 //        }
-    }
+   
+
+   
 
 
+    // //将消息显示在网页上
+    // function setMessageInnerHTML(innerHTML) {
+    //     document.getElementById('message').innerHTML += innerHTML + '<br/>';
+    // }
 
+    // //关闭连接
+    // function closeWebSocket() {
+    //     websocket.close();
+    // }
 
-    //将消息显示在网页上
-    function setMessageInnerHTML(innerHTML) {
-        document.getElementById('message').innerHTML += innerHTML + '<br/>';
-    }
-
-    //关闭连接
-    function closeWebSocket() {
-        websocket.close();
+    window.onload = function(){
+        this.getUserAllQuestions()
     }
 
 //    //发送消息
@@ -133,21 +200,21 @@
 //        var message = document.getElementById('text').value;
 //        websocket.send( message);
 //    }
-    //发送消息
-    function send() {
-        //获取输入的文本信息进行发送
-        var message = document.getElementById('text').value;
-        var toUser = document.getElementById('toUser').value;
-        var socketMsg = {msg:message,toUser:toUser};
-        if(toUser == ''){
-            //群聊.
-            socketMsg.type = 0;
-        }else{
-            //单聊.
-            socketMsg.type = 1;
-        }
-
-        websocket.send(JSON.stringify(socketMsg));
-    }
+//    //发送消息
+//    function send() {
+//        //获取输入的文本信息进行发送
+//        var message = document.getElementById('text').value;
+//        var toUser = document.getElementById('toUser').value;
+//        var socketMsg = {msg:message,toUser:toUser};
+//        if(toUser == ''){
+//            //群聊.
+//            socketMsg.type = 0;
+//        }else{
+//            //单聊.
+//            socketMsg.type = 1;
+//        }
+//
+//        websocket.send(JSON.stringify(socketMsg));
+//    }
 </script>
 </html>
