@@ -8,10 +8,12 @@ import com.zj.onlinetest.enums.RoleEnum;
 import com.zj.onlinetest.service.QuestService;
 import com.zj.onlinetest.service.UserService;
 import com.zj.onlinetest.utils.ResultVoUtil;
+import com.zj.onlinetest.utils.TimeUtils;
 import com.zj.onlinetest.vo.ResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -90,6 +92,34 @@ public class UserController
         User user =userService.selectOneByUsername( nowName );
         return ResultVoUtil.success( CommonEnum.GETTESTUSERSELFINFOSUCCESS.getMessage(),user );
     }
+
+    /**
+     * 开始答题
+     * @return
+     */
+    @GetMapping("/startTest")
+    @CrossOrigin
+    public ResultVo startTest() {
+        User user = new User();
+        user.setStartTime( TimeUtils.getNow());
+        userService.saveOrUpdate( user );
+        return ResultVoUtil.success( CommonEnum.STARTTESTSUCCESS.getMessage(),null );
+    }
+
+    /**
+     * 结束答题
+     * @return
+     */
+    @GetMapping("/endTest")
+    @CrossOrigin
+    public ResultVo endTest() {
+        User user = new User();
+        user.setEndTime(TimeUtils.getNow());
+        user.setLimitTimes( user.getLimitTimes()-1 );
+        userService.saveOrUpdate( user );
+        return ResultVoUtil.success( CommonEnum.ENDTESTSUCCESS.getMessage(),null );
+    }
+
 
 
 }

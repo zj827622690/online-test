@@ -30,6 +30,8 @@ public enum  CommonEnum {
     PLAYBACKTESTSUCCESS(10,"开始回放"),
     GETTESTUSERSELFINFOSUCCESS(11,"获取用户信息成功"),
     GETALLUSERLISTAFTERPUBLISHEDTESTSUCCESS(12,"获取发布笔试后的笔试者列表成功"),
+    STARTTESTSUCCESS(13,"开始答题"),
+    ENDTESTSUCCESS(14,"结束答题"),
     ;
 
 

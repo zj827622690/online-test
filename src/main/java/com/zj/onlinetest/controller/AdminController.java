@@ -296,6 +296,8 @@ public class AdminController {
      * @return
      */
     @GetMapping("/getUserListAfterPublishWrittenTest")
+    @CrossOrigin
+
     public ResultVo getUserListAfterPublishWrittenTest(HttpServletRequest request,
                                                        @RequestParam("page") Integer pageIndex) {
         String nowName = userRoleAuthentication.
@@ -318,6 +320,42 @@ public class AdminController {
         return ResultVoUtil.successPage( CommonEnum.GETALLUSERLISTAFTERPUBLISHEDTESTSUCCESS.getMessage()
                 ,userArrayList.size(),list_new);
 
+    }
+
+    /**
+     * 实时观看
+     * @param userId
+     * @param request
+     * @return
+     */
+    @GetMapping("/getSelfQuestionsById")
+    public ResultVo getSelfQuestions(@RequestParam("userId") String userId,
+                                     HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+
+        User nowUser = userService.selectOneById( userId );
+
+        ArrayList<String> arrayList = new ArrayList<>(  );
+        String[] strs = nowUser.getQuestions().split( "#");
+        for (String str: strs) {
+            if(!Objects.equals( str, "" )) {
+                arrayList.add( str );
+            }
+        }
+
+        ArrayList<Question> questionArrayList = new ArrayList<>(  );
+        for (String id:arrayList) {
+            Question question = questService.selectOneById( id );
+            questionArrayList.add( question );
+        }
+
+        return ResultVoUtil.success(  CommonEnum.GETSELFQUESTIONSSUCCESS.getMessage(),questionArrayList);
     }
 
 
