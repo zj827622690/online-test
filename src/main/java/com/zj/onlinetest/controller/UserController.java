@@ -99,8 +99,15 @@ public class UserController
      */
     @GetMapping("/startTest")
     @CrossOrigin
-    public ResultVo startTest() {
-        User user = new User();
+    public ResultVo startTest(HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_USER.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+        User user = userService.selectOneByUsername( nowName );
         user.setStartTime( TimeUtils.getNow());
         userService.saveOrUpdate( user );
         return ResultVoUtil.success( CommonEnum.STARTTESTSUCCESS.getMessage(),null );
@@ -112,8 +119,15 @@ public class UserController
      */
     @GetMapping("/endTest")
     @CrossOrigin
-    public ResultVo endTest() {
-        User user = new User();
+    public ResultVo endTest(HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_USER.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+        User user = userService.selectOneByUsername( nowName );
         user.setEndTime(TimeUtils.getNow());
         user.setLimitTimes( user.getLimitTimes()-1 );
         userService.saveOrUpdate( user );
