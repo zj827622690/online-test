@@ -51,9 +51,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User changeUser(User user,Integer number, String questions) {
+    public User changeUser(User user,Integer number, String questions,String testUrl) {
         user.setNumber( number );
         user.setQuestions( questions );
+        user.setTestUrl(testUrl);
         userRepository.save( user );
         return user;
     }

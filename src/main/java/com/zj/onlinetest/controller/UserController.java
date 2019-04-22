@@ -1,6 +1,5 @@
 package com.zj.onlinetest.controller;
 
-import com.zj.onlinetest.Repository.UserRepository;
 import com.zj.onlinetest.component.UserRoleAuthentication;
 import com.zj.onlinetest.domain.Question;
 import com.zj.onlinetest.domain.User;
@@ -14,12 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**

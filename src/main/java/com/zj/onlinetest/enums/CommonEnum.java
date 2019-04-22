@@ -29,6 +29,7 @@ public enum  CommonEnum {
     GETALLQUESTIONSUCCESS(9,"获取所有笔试题成功"),
     PLAYBACKTESTSUCCESS(10,"开始回放"),
     GETTESTUSERSELFINFOSUCCESS(11,"获取用户信息成功"),
+    GETALLUSERLISTAFTERPUBLISHEDTESTSUCCESS(12,"获取发布笔试后的笔试者列表成功"),
     ;
 
 

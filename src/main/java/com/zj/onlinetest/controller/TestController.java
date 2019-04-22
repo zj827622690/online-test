@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 
 
@@ -20,7 +22,7 @@ import java.util.Date;
  * @Description: 仅用来测试
  */
 @RestController
-@RequestMapping("/test")
+//@RequestMapping("/test")
 public class TestController {
 
     @Autowired
@@ -29,29 +31,21 @@ public class TestController {
     @Autowired
     Sender sender;
 
-    @GetMapping("/aaa")
-    public String test() {
-        //HttpServletResponse.SC_METHOD_NOT_ALLOWED 状态码
-
-//        String aaa =RandomUtils.number( 6 );
-
-//        Long millisecond = Instant.now().toEpochMilli();  // 获取当前时间，精确到毫秒
-//
-//        System.out.println( millisecond );
-//
-//        DateTimeFormatter ftf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//
-//        System.out.println(ftf.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(millisecond), ZoneId.systemDefault())));
-
-        Long aaa=TimeUtils.getNow();
-        System.out.println(aaa);
-
-        System.out.println( new Date(aaa) );
-
-//        System.out.println( Timeutils.convertTimeToLong(Timeutils.timeToString( aaa )   ));
-
+    @GetMapping("/test/aaa")
+    public String testad() {
         return "111";
     }
+
+    @GetMapping("/aaa")
+    public String testadaa() {
+        return "111";
+    }
+
+    @GetMapping("/test/html")
+    public void testhtml(HttpServletResponse response) throws IOException {
+        response.sendRedirect( "/static/webSocketTest.html" );
+    }
+
 
     @GetMapping("/create")
     public String create() {

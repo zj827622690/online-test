@@ -21,7 +21,7 @@ public interface UserService {
 
     User selectOneById(String id);
 
-    User changeUser(User user,Integer number, String questions);
+    User changeUser(User user,Integer number, String questions, String testUrl);
 
     List<User> selectAllUser(Integer pageIndex);
 

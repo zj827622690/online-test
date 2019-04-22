@@ -50,7 +50,13 @@ public class User {
      */
     private Long endTime;
 
+    /**
+     * 测试链接
+     */
+    private String testUrl;
+
     private Long createTime;
+
 
     public User() {
 
@@ -135,5 +141,13 @@ public class User {
 
     public void setQuestions(String questions) {
         this.questions = questions;
+    }
+
+    public String getTestUrl() {
+        return testUrl;
+    }
+
+    public void setTestUrl(String testUrl) {
+        this.testUrl = testUrl;
     }
 }
