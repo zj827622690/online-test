@@ -81,13 +81,13 @@
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script>
 			layui.use('form', function() {
-				var form = layui.form();
+				var form = layui.form;
 				form.render();
 			});
 
 			$.ajax({
 				type: 'get',
-				url :host() + '/getAllTestUser?token=' + localStorage.token,
+				url: host() + '/getAllTestUser?token=' + localStorage.token,
 				dataType: 'json',
 				success: function(msg) {
 					var data = msg.data;
@@ -96,13 +96,13 @@
 					}
 				},
 				error: function(msg) {
-					alert("获取用户失败");
+					layer.alert("获取用户失败");
 				}
 			})
 
 			$.ajax({
 				type: 'get',
-				url : host() + '/getAllQuestions?token=' + localStorage.token,
+				url: host() + '/getAllQuestions?token=' + localStorage.token,
 				dataType: 'json',
 				success: function(msg) {
 					var data = msg.data;
@@ -111,7 +111,7 @@
 					}
 				},
 				error: function(msg) {
-					alert("获取笔试题目失败");
+					layer.alert("获取笔试题目失败");
 				}
 			})
 			var del = function(obj) {
@@ -125,7 +125,7 @@
 					$("#BST span").each(function() {
 						var BSTID = $(this).attr("key");
 						if(BSTID == $("#exam").val()) {
-							alert("不能重复选择笔试题");
+							layer.alert("不能重复选择笔试题");
 							flag = 1;
 							return;
 						}
@@ -133,7 +133,7 @@
 					if(flag == 1) return;
 					var h = '<div id="' + $("#exam").val() + '"><div class="layui-form layui-inline " style="margin-top: 5px;"><div style="margin-left:110px; margin-top:0px;width: 150px;display: inline-block;"><span key=' + $("#exam").val() + '>' + $("#exam").find("option:selected").text() + '</span></div><button class="layui-btn  delEXAM " onclick="del(' + $("#exam").val() + ')"  key="' + $("#exam").val() + '"  style="margin-left:3px">删除该题</button></div></div>'
 					$("#BST").append(h);
-				} else alert("请先选择题目");
+				} else layer.alert("请先选择题目");
 			})
 
 			/*
@@ -145,7 +145,7 @@
 					$("#YH span").each(function() {
 						var USERID = $(this).attr("key");
 						if(USERID == $("#user").val()) {
-							alert("不能重复选择用户");
+							layer.alert("不能重复选择用户");
 							flag = 1;
 							return;
 						}
@@ -153,7 +153,7 @@
 					if(flag == 1) return;
 					var h = '<div id="' + $("#user").val() + '"><div class="layui-form layui-inline " style="margin-top: 5px;"><div style="margin-left:110px; margin-top:0px;width: 150px;display: inline-block;"><span key=' + $("#user").val() + '>' + $("#user").find("option:selected").text() + '</span></div><button class="layui-btn  delEXAM " onclick="del(' + $("#user").val() + ')"  key="' + $("#user").val() + '"  style="margin-left:3px">删除用户</button></div></div>'
 					$("#YH").append(h);
-				} else alert("请先选择用户");
+				} else layer.alert("请先选择用户");
 			})
 
 			/*
@@ -178,11 +178,11 @@
 				BSTID = BSTID.substring(0, BSTID.length - 1);
 				USERID = USERID.substring(0, USERID.length - 1);
 				if(USERID == "") {
-					alert("请先选择用户");
+					layer.alert("请先选择用户");
 					return;
 				}
 				if(BSTID == "") {
-					alert("请先选择笔试题");
+					layer.alert("请先选择笔试题");
 					return;
 				}
 				$("#usernum").val(USERNUM);
@@ -203,18 +203,19 @@
 						var usernameList = usernames.split(",");
 						var u = '';
 						for(var i = 0; i < usernum; i++) {
-							alert(usernameList[i] + " url:" + msg.data[i]);
 							u = '<div class="layui-input-block"><input type="text" name="URL" style="border:0" readonly="readonly"   lay-verify="title" autocomplete="off"  class="layui-input" value="笔试者：' + usernameList[i] + ' URL:   ' + msg.data[i] + '"></input></div>'
 							$("#urlList").append(u);
 						}
 						$("#BST").empty();
 						$("#YH").empty();
 						$("#exam").val("");
+						$("#exam").text('请选择');
 						$("#user").val("");
-						alert(msg.msg);
+						$("#user").text('请选择');
+						layer.alert(msg.msg);
 					},
 					error: function(msg) {
-						alert("新增笔试失败" + msg.msg);
+						layer.alert("新增笔试失败" + msg.msg);
 					}
 				})
 

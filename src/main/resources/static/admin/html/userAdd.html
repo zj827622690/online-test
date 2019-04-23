@@ -21,18 +21,18 @@
 						<div class="layui-card-header">笔试者新增</div>
 
 						<div class="layui-card-body">
-								<form class="layui-form">
-							<div class="layui-form-item">
-								<label class="layui-form-label">笔试者：</label>
-								<div class="layui-input-block">
-									<input type="text" id="username" name="username" lay-verify="required" autocomplete="off" placeholder="请输入笔试者名" class="layui-input">
+							<div class="layui-form">
+								<div class="layui-form-item">
+									<label class="layui-form-label">笔试者：</label>
+									<div class="layui-input-block">
+										<input type="text" id="username" name="username" lay-verify="required" autocomplete="off" placeholder="请输入笔试者名" class="layui-input">
+									</div>
+								</div>
+
+								<div class="site-demo-button" style="margin-top: 40px; ">
+									<button class="layui-btn" lay-submit lay-filter="saveUser" id="saveUser">保存</button>
 								</div>
 							</div>
-							
-							<div class="site-demo-button" style="margin-top: 40px; ">
-								<button class="layui-btn" lay-submit lay-filter="saveUser">保存</button>
-							</div>
-							</form>
 
 						</div>
 					</div>
@@ -40,13 +40,11 @@
 			</div>
 		</div>
 		<script src="../../layui/layui.js"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script>
-			layui.use(['form','layer'], function () {
-				var form = layui.form
-					, layer = layui.layer
 
-				form.on('submit(saveUser)', function (data) {
+
+				$("#saveUser").click(function() {
 					$.ajax({
 						type: 'post',
 						url: 'http://localhost:8080/addNewUser',
@@ -56,16 +54,15 @@
 						},
 						dataType: 'json',
 						async: true,
-						success: function (res) {
-								layer.alert(res.msg);
+						success: function(res) {
+							layer.alert(res.msg);
 						},
-						error: function (res) {
+						error: function(res) {
 							layer.alert(res.msg);
 						}
 					})
-					return false;
-				});
-			});
+				})
+		
 		</script>
 	</body>
 

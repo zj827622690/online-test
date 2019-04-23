@@ -7,13 +7,12 @@ import com.zj.onlinetest.utils.JwtTokenUtil;
 import com.zj.onlinetest.utils.ResultVoUtil;
 import com.zj.onlinetest.vo.ResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -23,6 +22,9 @@ import java.util.Objects;
  */
 @RestController
 public class AuthController {
+
+    @Value("${local.url}")
+    private String url;
 
     @Autowired
     UserRepository userRepository;
@@ -52,5 +54,13 @@ public class AuthController {
         String token = jwtTokenUtil.generateToken( user );
         return ResultVoUtil.success( CommonEnum.LOGINSUCCEES.getMessage(),token );
     }
+
+    @GetMapping("/")
+    @CrossOrigin
+    public void index(HttpServletResponse response) throws IOException {
+        response.sendRedirect( url+"static/login.html" );
+    }
+
+
 
 }

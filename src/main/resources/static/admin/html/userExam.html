@@ -27,7 +27,7 @@
 				<div class="layui-col-md12">
 					<div class="layui-card">
 						<div class="layui-card-header">笔试答题</div>
-						<div  class="timer">
+						<div class="timer">
 							FNST在线笔试，当前答题者：<span id="username"></span>
 						</div>
 						<div class="timer">
@@ -39,66 +39,25 @@
 							<span id="second">00</span>
 						</div>
 						<br />
-							<div class="layui-form">
-								<label class="layui-form-label">笔试题：</label>
-								<div style="width: 150px;display: inline-block;">
-									<select name="exam" id="exam">
-										<option value="">请选择</option>
-									</select>
-								</div>
-								<button class="layui-btn addEXAM">选择该题</button>
-							</div>
+
+						<hr class="layui-bg-orange">
 						<div class="layui-card-body">
 							<div id="EXAM">
-							<div class="layui-form-item">
-								<div class="layui-form-item">
-									<label class="layui-form-label">笔试题目：</label>
+								<!--<div class="layui-form-item">
+									<div class="layui-form-item">
+										<span>第1题：</span><span class="question"id="quesion1"></span>
+									</div>
 								</div>
-								<textarea class="layui-textarea" id="bstm">
-                       		
-             		       </textarea>
-							</div>
-
-							<!--橙色分割线-->
-							<hr class="layui-bg-orange">
-							<div class="layui-form-item">
-								<label class="layui-form-label">答案：</label>
-							
-
-							<!--存放内容-->
-							<textarea class="layui-textarea" id="bsdt" style="height: 400px;">
-                       		
-             		 		 </textarea>
-             		 		 <hr class="layui-bg-red">
-             		  	</div>
-             		 </div>
-             		  	<div id="EXAM">
-							<div class="layui-form-item">
+								<hr class="layui-bg-grey">
 								<div class="layui-form-item">
-									<label class="layui-form-label">笔试题目：</label>
-								</div>
-								<textarea class="layui-textarea" id="bstm">
-                       		
-             		       </textarea>
+									<span>答题：</span>
+									<textarea class="layui-textarea answer" id="answer1" style="height: 300px;">
+             		 		 		</textarea>
+									<hr class="layui-bg-red">
+								</div>-->
+
 							</div>
-
-							<!--橙色分割线-->
-							<hr class="layui-bg-orange">
-							<div class="layui-form-item">
-								<label class="layui-form-label">答案：</label>
-							
-
-							<!--存放内容-->
-							<textarea class="layui-textarea" id="bsdt" style="height: 400px;">
-                       		
-             		 		 </textarea>
-             		 		 <hr class="layui-bg-red">
-             		  	</div>
-             		 </div>
-						
-						
-						
-
+							<input type="hidden" id="listid" />
 							<div class="site-demo-button" style="margin-top: 40px; text-align: right;">
 								<button class="layui-btn site-demo-layedit" style="" id="commit">提交题目</button>
 							</div>
@@ -109,22 +68,158 @@
 			</div>
 		</div>
 		<script src="../../layui/layui.js"></script>
+		<script src="../js/common.js"></script>
+		<script src="../../js/sockjs.min.js"></script>
+		<script src="../../js/stomp.min.js"></script>
 		<script>
+			var stompClient;
+			var serverUrl = "http://localhost:8080/websocket";
+			var room; //频道号
+			var websocket = null;
+			var userid=localStorage.getItem("userid");
+			//websocket连接
+			function conectWebSocket(room, serverUrl) {
+				var socket = new SockJS(serverUrl);
+				this.stompClient = Stomp.over(socket);
+				var that = this;
+				this.stompClient.connect({}, function(frame) {
+					that.stompClient.subscribe('/topic/' + room, function(txt) {});
+				});
+			}
+
+			function disconnect() {
+				//断开连接的方法
+				if(this.stompClient !== undefined) {
+					this.stompClient.disconnect();
+					layer.alert("Disconnected");
+				} else {
+					layer.alert("当前没有连接websocket")
+				}
+				this.stompClient = undefined;
+			}
+
+			//发送消息
+			function sendMessage(msg, questionid) {
+				var socketMsg = {
+					msg: msg,
+					toUser: userid
+				};
+				this.stompClient.send(
+					'/app/chat', {},
+					JSON.stringify({
+						'room': userid,
+						'type': "1", //1,2
+						'content': msg,
+						'userId': userid, //小明
+						'questionId': questionid, //题目1
+						'createTime': "",
+					})
+				);
+
+			}
+
 			layui.use('layedit', function() {
+				var list = [];
+				var listmsg = [];
+				var listVal=[];
 				var $ = layui.jquery;
+				var layedit = layui.layedit;
+				//构建一个默认的编辑器
+				$("#username").text(localStorage.getItem("username"));
+
+				//				//编辑器外部操作
+				//				var active = {
+				//					content: function() {
+				//						alert(layedit.getContent(index)); //获取编辑器内容
+				//					},
+				//					text: function() {
+				//						alert(layedit.getText(index)); //获取编辑器纯文本内容
+				//					},
+				//					selection: function() {
+				//						alert(layedit.getSelection(index));
+				//					}
+				//				};
+
+				//				$('.site-demo-layedit').on('click', function() {
+				//					var type = $(this).data('type');
+				//					active[type] ? active[type].call(this) : '';
+				//				});
+				//				
+
+				$.ajax({
+					type: 'get',
+					url: host() + "/getSelfQuestions",
+					data: {
+						token: localStorage.token2,
+					},
+					dataType: 'json',
+					async: false,
+					success: function(msg) {
+						var exam = $("#EXAM");
+						for(var i = 0; i < msg.data.length; i++) {
+							var j = i + 1;
+							var h = '<div class="layui-form-item "><div class="layui-form-item "><span>第' + j + '题：</span><span class="question"id="quesion' + j + '">' + msg.data[i].subject + '</span></div></div><hr class="layui-bg-grey"><div class="layui-form-item"><span>答题：</span><textarea class="layui-textarea answer" id="' + msg.data[i].id + '" style="height: 300px;"></textarea><hr class="layui-bg-red"></div>';
+							exam.append(h);
+							listmsg.push(msg.data[i].id);
+							list.push(layedit.build(msg.data[i].id, {
+								tool: ['strong' //加粗
+									, 'italic', 'underline', 'del'
+
+									, '|'
+
+									, 'left', 'center', 'right'
+								]
+							}));
+						}						
+						$("#LAY_demo_editor").next().find('iframe').contents().find('body').prop("contenteditable",false);
+
+					},
+					error: function(msg) {}
+				})
+
+				timer = setInterval(function() {
+					
+					for(var i=0;i<listmsg.length;i++){
+						if(listVal[i]!=layedit.getContent(list[i])){
+							sendMessage(layedit.getContent(list[i]),listmsg[i]);
+							listVal[i]=layedit.getContent(list[i]);
+						}
+					}
+//					for(var i=0;i<list.length;i++){
+//						
+//					}
+//					$('#textarea').bind('input propertychange', function(){  
+//						console.log("msg");
+//						var questionid = $(this).attr("id");
+//						conectWebSocket(questionid, serverUrl);
+//						var msg = $("#" + questionid + "").val();
+//						console.log(msg);
+//						sendMessage(msg, questionid);
+////						disconnect();
+//					})
+					
+				}, 1000)
 
 				$("#commit").on('click', function() {
 					var hours = document.getElementById("hours").innerText,
 						minute = document.getElementById("minute").innerText,
 						second = document.getElementById("second").innerText;
 					var time = hours + ":" + minute + ":" + second;
-					alert(time);
-					alert($("#bsdt").val()); //获取编辑器内容
+					
+					$.ajax({
+						type:"get",
+						url:host()+"/endTest",
+						data:{
+							token:localStorage.getItem("token2")
+						},
+						async:true
+					});
 				})
 
 			});
 
 			window.onload = function() {
+			    this.conectWebSocket(userid, serverUrl);
 				var hours = document.getElementById("hours"),
 					minute = document.getElementById("minute"),
 					second = document.getElementById("second"),

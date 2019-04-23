@@ -70,7 +70,8 @@
               that.stompClient.subscribe('/topic/'+that.room ,function(txt) {
                   // console.log("websocket连接成功");
                   // console.log(txt);
-                  document.getElementById('message').innerHTML += JSON.parse(txt.body)['content']+ '<br/>';
+                  document.getElementById('
+                  ').innerHTML += JSON.parse(txt.body)['content']+ '<br/>';
                   // const sender = JSON.parse(message.body)['sender'];
 ////                const language = JSON.parse(message.body)['language'];
 ////                const content = JSON.parse(message.body)['content'];

@@ -21,16 +21,16 @@
 						<div class="layui-card-header">笔试新增</div>
 
 						<div class="layui-card-body">
-							<form class="layui-form">
+							<div class="layui-form">
 							<div class="layui-form-item">
 								<label class="layui-form-label">笔试题：</label>
 							</div>
 							<!--存放内容-->
 							<textarea class="layui-textarea" id="subject" lay-verify="required"></textarea>
 							<div class="site-demo-button" style="margin-top: 40px;">
-								<button class="layui-btn" lay-submit lay-filter="saveExam">保存笔试题</button>
+								<button class="layui-btn" lay-submit lay-filter="saveExam" id="saveExam">保存笔试题</button>
 							</div>
-						</form>
+						</div>
 						</div>
 					</div>
 				</div>
@@ -43,7 +43,7 @@
 				var form = layui.form
 					, layer = layui.layer
 
-				form.on('submit(saveExam)', function (data) {
+			$("#saveExam").click(function(){
 					$.ajax({
 						type: 'post',
 						url: 'http://localhost:8080/addNewQuestion',
@@ -60,7 +60,6 @@
 							layer.alert(res.msg);
 						}
 					})
-					return false;
 				});
 			});
 		</script>

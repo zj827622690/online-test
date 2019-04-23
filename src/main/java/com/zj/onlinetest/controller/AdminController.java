@@ -179,9 +179,16 @@ public class AdminController {
                 userArrayList.add( exc );
             }
         }
-        List list_new=ListPagingUtils.getPaging( userArrayList,pageIndex-1,5 );
 
-        return ResultVoUtil.successPage( CommonEnum.GETUSEALLSUCCESS.getMessage(),userArrayList.size(),list_new);
+        try{
+            List list_new=ListPagingUtils.getPaging( userArrayList,pageIndex-1,5 );
+            return ResultVoUtil.successPage( CommonEnum.GETUSEALLSUCCESS.getMessage(),userArrayList.size(),list_new);
+        } catch (IndexOutOfBoundsException e) {
+            return ResultVoUtil.successPage( CommonEnum.GETUSEALLSUCCESS.getMessage(),0,null);
+        }
+
+
+
     }
 
     /**
@@ -259,8 +266,10 @@ public class AdminController {
     public ResultVo getAllQuestionsWithPage(@RequestParam("page") Integer pageIndex) {
         List<Question> questionList = questService.selectAll( pageIndex-1 );
 
+        List<Question> all = questService.selectAll();
+
         return ResultVoUtil.successPage( CommonEnum.GETALLQUESTIONSUCCESS.getMessage(),
-                                         questionList.size(),questionList );
+                                         all.size(),questionList );
     }
 
     /**
@@ -311,14 +320,18 @@ public class AdminController {
         List<User> lists=userService.selectAllUser();
         ArrayList<User> userArrayList = new ArrayList<>(  );
         for (User exc :lists) {
-            if (!Objects.equals( exc.getTestUrl(),null)) {
+            if (!Objects.equals( exc.getTestUrl(),null)&&!Objects.equals( exc.getNumber(),null )) {
                 userArrayList.add( exc );
             }
         }
-        List list_new=ListPagingUtils.getPaging( userArrayList,pageIndex-1,5 );
-
-        return ResultVoUtil.successPage( CommonEnum.GETALLUSERLISTAFTERPUBLISHEDTESTSUCCESS.getMessage()
-                ,userArrayList.size(),list_new);
+        try{
+            List list_new=ListPagingUtils.getPaging( userArrayList,pageIndex-1,5 );
+            return ResultVoUtil.successPage( CommonEnum.GETALLUSERLISTAFTERPUBLISHEDTESTSUCCESS.getMessage()
+                    ,userArrayList.size(),list_new);
+        }catch (IndexOutOfBoundsException e) {
+            return ResultVoUtil.successPage( CommonEnum.GETALLUSERLISTAFTERPUBLISHEDTESTSUCCESS.getMessage()
+                    ,0,null);
+        }
 
     }
 
@@ -329,6 +342,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/getSelfQuestionsById")
+    @CrossOrigin
     public ResultVo getSelfQuestions(@RequestParam("userId") String userId,
                                      HttpServletRequest request) {
         String nowName = userRoleAuthentication.

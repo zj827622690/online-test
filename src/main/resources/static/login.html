@@ -43,7 +43,6 @@
 <script>
 
         $("#login").click(function(){
-      	alert(host()+'/login');
             $.ajax({
             	type:'post',
                 url:host()+"/login",
@@ -55,9 +54,6 @@
                 async:true,
                 success:function(msg) {
                   	localStorage.setItem("token",msg.data);
-                    localStorage.setItem("token",msg.data);
-//              	alert("success"+msg.data+"  "+msg.msg)
-//              	console.log("success"+msg);
                		location.href = "index.html";
                },
                error: function(msg) {
