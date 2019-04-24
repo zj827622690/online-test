@@ -107,7 +107,12 @@ public class UserController
             return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     CommonEnum.PERRMISSIONERROR.getMessage());
         }
+
         User user = userService.selectOneByUsername( nowName );
+        if (user.getLimitTimes()<1) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.USERHASWDTAKEEDTEST.getMessage());
+        }
         user.setStartTime( TimeUtils.getNow());
         userService.saveOrUpdate( user );
         return ResultVoUtil.success( CommonEnum.STARTTESTSUCCESS.getMessage(),null );

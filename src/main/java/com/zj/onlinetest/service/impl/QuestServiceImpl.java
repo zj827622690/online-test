@@ -41,13 +41,13 @@ public class QuestServiceImpl implements QuestService{
 
     @Override
     public List<Question> selectAll() {
-        List<Question> questionList = questionRepository.findAll();
+        List<Question> questionList = questionRepository.findAllByOrderByCreateTimeDesc();
         return questionList;
     }
 
     @Override
     public List<Question> selectAll(Integer pageIndex) {
         Pageable pageable = PageRequest.of( pageIndex,5);
-        return questionRepository.findAll( pageable).getContent();
+        return questionRepository.findAllByOrderByCreateTimeDesc( pageable).getContent();
     }
 }

@@ -67,7 +67,7 @@
 			}
 			var userid = GetQueryString("userid");
 			var stompClient;
-			var serverUrl = "http://localhost:8080/websocket";
+			var serverUrl = host()+"/websocket";
 			var room; //频道号
 			var websocket = null;
 			//websocket连接

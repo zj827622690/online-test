@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>Title</title>
+		<title>FNST-在线笔试系统</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -40,6 +40,16 @@
 		<script src="../js/common.js"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script>
+			var limitTimes;
+			layui.config({
+				base: './../dist/'
+			}).extend({
+				notice: 'notice'
+			});
+			var del = function(obj) {
+				$("#" + obj + "").remove();
+			}
+
 			function GetQueryString(name) {     
 				var  reg = new  RegExp("(^|&)" + name + "=([^&]*)(&|$)");    
 				var  r = window.location.search.substr(1).match(reg);     
@@ -47,39 +57,60 @@
 				return  null;
 			}
 			var token = GetQueryString("token");
-			$.ajax({
-				type: 'get',
-				url: host() + "/getSelfInfo",
-				data: {
-					token: token
-				},
-				dataType: 'json',
-				async: true,
-				success: function(msg) {
-					var q = msg.data["questions"];
-					var n = q.split("#").length - 2;
-					localStorage.setItem("userid", msg.data["id"]);
-					localStorage.setItem("username", msg.data["username"]);
-					localStorage.setItem("token2", GetQueryString("token"));
-					$("#username").text(msg.data["username"]);
-					$("#number").text(n);
-				},
-				error: function(msg) {
-					layer.alert("登录失败"+msg.msg);
-				}
-			})
+			layui.use(['notice'], function() {
+				var notice = layui.notice; // 允许别名 toastr
+				notice.options = {
+					closeButton: true, //显示关闭按钮
+					debug: false, //启用debug
+					positionClass: "toast-top-right", //弹出的位置,
+					showDuration: "300", //显示的时间
+					hideDuration: "1000", //消失的时间
+					timeOut: "2000", //停留的时间
+					extendedTimeOut: "1000", //控制时间
+					showEasing: "swing", //显示时的动画缓冲方式
+					hideEasing: "linear", //消失时的动画缓冲方式
+					iconClass: 'toast-info', // 自定义图标，有内置，如不需要则传空 支持layui内置图标/自定义iconfont类名
+					onclick: null, // 点击关闭回调
+				};
+						$.ajax({
+							type: 'get',
+							url: host() + "/getSelfInfo",
+							data: {
+								token: token
+							},
+							dataType: 'json',
+							async: true,
+							success: function(msg) {
+								var q = msg.data["questions"];
+								var n = q.split("#").length - 2;
+								localStorage.setItem("userid", msg.data["id"]);
+								localStorage.setItem("username", msg.data["username"]);
+								localStorage.setItem("token2", GetQueryString("token"));
+								limitTimes=msg.data["limitTimes"]
+								$("#username").text(msg.data["username"]);
+								$("#number").text(n);
+							},
+							error: function(msg) {
+								layer.alert("登录失败" + msg.msg);
+							}
+						})
 
-			$("#EXAMBegin").click(function() {
-				$.ajax({
-					type: "get",
-					url: host() + "/startTest",
-					data: {
-						token: token
-					},
-					async: true
-				});
-				window.open("userExam.html");
-			})
+						$("#EXAMBegin").click(function() {
+							if(limitTimes==0){
+								notice.warning("笔试已经提交，不能再次开始答题");
+								return;
+							}
+							$.ajax({
+								type: "get",
+								url: host() + "/startTest",
+								data: {
+									token: token
+								},
+								async: true
+							});
+							window.open("userExam.html");
+						})
+				})
 		</script>
 	</body>
 

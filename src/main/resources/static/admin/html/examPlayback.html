@@ -73,6 +73,12 @@
 		<script src="../../js/sockjs.min.js"></script>
 		<script src="../../js/stomp.min.js"></script>
 		<script>
+			layui.config({
+				base: './../dist/'
+			}).extend({
+				notice: 'notice'
+			});
+
 			function GetQueryString(name) {     
 				var  reg = new  RegExp("(^|&)" + name + "=([^&]*)(&|$)");    
 				var  r = window.location.search.substr(1).match(reg);     
@@ -81,7 +87,7 @@
 			}
 			var userid = GetQueryString("userid");
 			var stompClient;
-			var serverUrl = "http://localhost:8080/websocket";
+			var serverUrl = host() + "/websocket";
 			var room; //频道号
 			var websocket = null;
 			//websocket连接
@@ -110,9 +116,23 @@
 				this.stompClient = undefined;
 			}
 
-			layui.use('form', function() {
+			layui.use(['notice', 'form'], function() {
 				var form = layui.form;
 				form.render();
+				var notice = layui.notice; // 允许别名 toastr
+				notice.options = {
+					closeButton: true, //显示关闭按钮
+					debug: false, //启用debug
+					positionClass: "toast-top-right", //弹出的位置,
+					showDuration: "300", //显示的时间
+					hideDuration: "1000", //消失的时间
+					timeOut: "2000", //停留的时间
+					extendedTimeOut: "1000", //控制时间
+					showEasing: "swing", //显示时的动画缓冲方式
+					hideEasing: "linear", //消失时的动画缓冲方式
+					iconClass: 'toast-info', // 自定义图标，有内置，如不需要则传空 支持layui内置图标/自定义iconfont类名
+					onclick: null, // 点击关闭回调
+				};
 				var $ = layui.jquery;
 				$("#username").text(localStorage.getItem("bsusername"));
 				$.ajax({
@@ -132,7 +152,7 @@
 
 					},
 					error: function(msg) {
-						layer.alert("获取笔试题目失败");
+						notice.error("获取笔试题目失败");
 					}
 				})
 				form.render('select');
@@ -144,7 +164,7 @@
 					var questionId = $("#exam").val();
 					var subject = $("#exam").find("option:selected").text();
 					if(subject == "请选择") {
-						alert("请先选择笔试题");
+						notice.warning("请先选择笔试题"); 
 						return;
 					}
 					$("#question").text(subject);
@@ -160,7 +180,7 @@
 						dataType: 'json',
 						async: false,
 						success: function(msg) {
-							
+
 						},
 						error: function(msg) {}
 					})

@@ -31,23 +31,27 @@
 								</div>
 								<button class="layui-btn addUSER">选中用户</button>
 							</div>
+							<hr class="layui-bg-grey">
+							<label style="margin-left: 30px;">已选用户：</label>
 							<!--用户列表！！！-->
 							<div id="YH">
-
 							</div>
 							<!--橙色分割线-->
 							<hr class="layui-bg-orange">
+							<div>
 
-							<div class="layui-form">
-								<label class="layui-form-label">笔试题：</label>
-								<div style="width: 150px;display: inline-block;">
-									<select name="exam" id="exam">
-										<option value="">请选择</option>
-									</select>
+								<div class="layui-form">
+									<label class="layui-form-label">笔试题：</label>
+									<div style="width: 150px;display: inline-block;">
+										<select name="exam" id="exam">
+											<option value="">请选择</option>
+										</select>
+									</div>
+									<button class="layui-btn addEXAM">选中该题</button>
 								</div>
-								<button class="layui-btn addEXAM">选中该题</button>
 							</div>
-
+							<hr class="layui-bg-grey">
+							<label style="margin-left: 30px;">已选试题：</label>
 							<!--笔试题列表！！！-->
 							<div id="BST">
 
@@ -80,149 +84,172 @@
 		<script src="../js/common.js"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script>
-			layui.use('form', function() {
-				var form = layui.form;
-				form.render();
+			layui.config({
+				base: './../dist/'
+			}).extend({
+				notice: 'notice'
 			});
-
-			$.ajax({
-				type: 'get',
-				url: host() + '/getAllTestUser?token=' + localStorage.token,
-				dataType: 'json',
-				success: function(msg) {
-					var data = msg.data;
-					for(var i = 0; i < data.length; i++) {
-						$("#user").append("<option value=" + data[i].id + ">" + data[i].username + "</option>");
-					}
-				},
-				error: function(msg) {
-					layer.alert("获取用户失败");
-				}
-			})
-
-			$.ajax({
-				type: 'get',
-				url: host() + '/getAllQuestions?token=' + localStorage.token,
-				dataType: 'json',
-				success: function(msg) {
-					var data = msg.data;
-					for(var i = 0; i < data.length; i++) {
-						$("#exam").append("<option  value=" + data[i].id + ">" + data[i].subject + "</option>");
-					}
-				},
-				error: function(msg) {
-					layer.alert("获取笔试题目失败");
-				}
-			})
 			var del = function(obj) {
 				$("#" + obj + "").remove();
 			}
+			layui.use(['notice', 'form'], function() {
+				var form = layui.form;
+				form.render();
+				var notice = layui.notice; // 允许别名 toastr
+				notice.options = {
+					closeButton: true, //显示关闭按钮
+					debug: false, //启用debug
+					positionClass: "toast-top-right", //弹出的位置,
+					showDuration: "300", //显示的时间
+					hideDuration: "1000", //消失的时间
+					timeOut: "2000", //停留的时间
+					extendedTimeOut: "1000", //控制时间
+					showEasing: "swing", //显示时的动画缓冲方式
+					hideEasing: "linear", //消失时的动画缓冲方式
+					iconClass: 'toast-info', // 自定义图标，有内置，如不需要则传空 支持layui内置图标/自定义iconfont类名
+					onclick: null, // 点击关闭回调
+				};
 
-			$(".addEXAM").click(function() {
-				var flag = 0;
-				if($("#exam").val() != "") {
-
-					$("#BST span").each(function() {
-						var BSTID = $(this).attr("key");
-						if(BSTID == $("#exam").val()) {
-							layer.alert("不能重复选择笔试题");
-							flag = 1;
-							return;
-						}
-					});
-					if(flag == 1) return;
-					var h = '<div id="' + $("#exam").val() + '"><div class="layui-form layui-inline " style="margin-top: 5px;"><div style="margin-left:110px; margin-top:0px;width: 150px;display: inline-block;"><span key=' + $("#exam").val() + '>' + $("#exam").find("option:selected").text() + '</span></div><button class="layui-btn  delEXAM " onclick="del(' + $("#exam").val() + ')"  key="' + $("#exam").val() + '"  style="margin-left:3px">删除该题</button></div></div>'
-					$("#BST").append(h);
-				} else layer.alert("请先选择题目");
-			})
-
-			/*
-			 * 选中用户
-			 */
-			$(".addUSER").click(function() {
-				var flag = 0;
-				if($("#user").val() != "") {
-					$("#YH span").each(function() {
-						var USERID = $(this).attr("key");
-						if(USERID == $("#user").val()) {
-							layer.alert("不能重复选择用户");
-							flag = 1;
-							return;
-						}
-					});
-					if(flag == 1) return;
-					var h = '<div id="' + $("#user").val() + '"><div class="layui-form layui-inline " style="margin-top: 5px;"><div style="margin-left:110px; margin-top:0px;width: 150px;display: inline-block;"><span key=' + $("#user").val() + '>' + $("#user").find("option:selected").text() + '</span></div><button class="layui-btn  delEXAM " onclick="del(' + $("#user").val() + ')"  key="' + $("#user").val() + '"  style="margin-left:3px">删除用户</button></div></div>'
-					$("#YH").append(h);
-				} else layer.alert("请先选择用户");
-			})
-
-			/*
-			 * 保存笔试
-			 */
-			$("#saveEXAM").click(function() {
-				var BST = "";
-				var BSTID = "";
-				var USER = "";
-				var USERID = "";
-				var USERNUM = 0;
-				$("#BST span").each(function() {
-					BST += $(this).text() + ",";
-					BSTID += $(this).attr("key") + ",";
-				});
-				$("#YH span").each(function() {
-					USER += $(this).text() + ",";
-					USERID += $(this).attr("key") + ",";
-					USERNUM++;
-				});
-				USER = USER.substring(0, USER.length - 1);
-				BSTID = BSTID.substring(0, BSTID.length - 1);
-				USERID = USERID.substring(0, USERID.length - 1);
-				if(USERID == "") {
-					layer.alert("请先选择用户");
-					return;
-				}
-				if(BSTID == "") {
-					layer.alert("请先选择笔试题");
-					return;
-				}
-				$("#usernum").val(USERNUM);
-				$("#usernames").val(USER);
 				$.ajax({
-					type: 'post',
-					url: 'http://localhost:8080/PublishWrittenTest',
-					data: {
-						token: localStorage.token,
-						userIds: USERID,
-						questionIds: BSTID
-					},
+					type: 'get',
+					url: host() + '/getAllTestUser?token=' + localStorage.token,
 					dataType: 'json',
-					async: true,
+					async: false,
 					success: function(msg) {
-						var usernum = $("#usernum").val();
-						var usernames = $("#usernames").val();
-						var usernameList = usernames.split(",");
-						var u = '';
-						for(var i = 0; i < usernum; i++) {
-							u = '<div class="layui-input-block"><input type="text" name="URL" style="border:0" readonly="readonly"   lay-verify="title" autocomplete="off"  class="layui-input" value="笔试者：' + usernameList[i] + ' URL:   ' + msg.data[i] + '"></input></div>'
-							$("#urlList").append(u);
+						var data = msg.data;
+						for(var i = 0; i < data.length; i++) {
+							$("#user").append("<option value=" + data[i].id + ">" + data[i].username + "</option>");
 						}
-						$("#BST").empty();
-						$("#YH").empty();
-						$("#exam").val("");
-						$("#exam").text('请选择');
-						$("#user").val("");
-						$("#user").text('请选择');
-						layer.alert(msg.msg);
+						form.render('select');
 					},
 					error: function(msg) {
-						layer.alert("新增笔试失败" + msg.msg);
+						notice.error("获取用户失败");
 					}
 				})
 
-			})
-			$("#returnEXAMList").click(function() {
-				window.open("examManage.html", "iframe")
-			})
+				$.ajax({
+					type: 'get',
+					url: host() + '/getAllQuestions?token=' + localStorage.token,
+					dataType: 'json',
+					success: function(msg) {
+						var data = msg.data;
+						for(var i = 0; i < data.length; i++) {
+							$("#exam").append("<option  value=" + data[i].id + ">" + data[i].subject + "</option>");
+						}
+						form.render('select');
+					},
+					error: function(msg) {
+						notice.error("获取笔试题目失败");
+					}
+				})
+
+				$(".addEXAM").click(function() {
+					var flag = 0;
+					if($("#exam").val() != "") {
+
+						$("#BST span").each(function() {
+							var BSTID = $(this).attr("key");
+							if(BSTID == $("#exam").val()) {
+								notice.warning("不能重复选择笔试题");
+								flag = 1;
+								return;
+							}
+						});
+						if(flag == 1) return;
+						var h = '<div id="' + $("#exam").val() + '"><div class="layui-form layui-inline " style="margin-top: 5px;display: inline-block;"><div style="margin-left:110px; margin-top:0px;width: 150px;display: inline-block;"><span key=' + $("#exam").val() + '>' + $("#exam").find("option:selected").text() + '</span></div><button class="layui-btn layui-btn-danger  " onclick="del(' + $("#exam").val() + ')"  key="' + $("#exam").val() + '"  style="margin-left:3px">删除该题</button></div></div>'
+						$("#BST").append(h);
+					} else layer.alert("请先选择题目");
+				})
+
+				/*
+				 * 选中用户
+				 */
+				$(".addUSER").click(function() {
+					var flag = 0;
+					if($("#user").val() != "") {
+						$("#YH span").each(function() {
+							var USERID = $(this).attr("key");
+							if(USERID == $("#user").val()) {
+								notice.warning("不能重复选择用户");
+								flag = 1;
+								return;
+							}
+						});
+						if(flag == 1) return;
+						var h = '<div id="' + $("#user").val() + '"><div class="layui-form layui-inline " style="margin-top: 5px;"><div style="margin-left:110px; margin-top:0px;width: 150px;display: inline-block;"><span key=' + $("#user").val() + '>' + $("#user").find("option:selected").text() + '</span></div><button class="layui-btn layui-btn-danger  " onclick="del(' + $("#user").val() + ')"  key="' + $("#user").val() + '"  style="margin-left:3px">删除用户</button></div></div>'
+						$("#YH").append(h);
+					} else notice.info("请先选择用户");
+				})
+
+				/*
+				 * 保存笔试
+				 */
+				$("#saveEXAM").click(function() {
+					var BST = "";
+					var BSTID = "";
+					var USER = "";
+					var USERID = "";
+					var USERNUM = 0;
+					$("#BST span").each(function() {
+						BST += $(this).text() + ",";
+						BSTID += $(this).attr("key") + ",";
+					});
+					$("#YH span").each(function() {
+						USER += $(this).text() + ",";
+						USERID += $(this).attr("key") + ",";
+						USERNUM++;
+					});
+					USER = USER.substring(0, USER.length - 1);
+					BSTID = BSTID.substring(0, BSTID.length - 1);
+					USERID = USERID.substring(0, USERID.length - 1);
+					if(USERID == "") {
+						notice.info("请先选择用户");
+						return;
+					}
+					if(BSTID == "") {
+						notice.info("请先选择笔试题");
+						return;
+					}
+					$("#usernum").val(USERNUM);
+					$("#usernames").val(USER);
+					$.ajax({
+						type: 'post',
+						url: host() + '/PublishWrittenTest',
+						data: {
+							token: localStorage.token,
+							userIds: USERID,
+							questionIds: BSTID
+						},
+						dataType: 'json',
+						async: true,
+						success: function(msg) {
+							var usernum = $("#usernum").val();
+							var usernames = $("#usernames").val();
+							var usernameList = usernames.split(",");
+							var u = '';
+							for(var i = 0; i < usernum; i++) {
+								u = '<div class="layui-input-block"><input type="text" name="URL" style="border:0" readonly="readonly"   lay-verify="title" autocomplete="off"  class="layui-input" value="笔试者：' + usernameList[i] + ' URL:   ' + msg.data[i] + '"></input></div>'
+								$("#urlList").append(u);
+							}
+							$("#BST").empty();
+							$("#YH").empty();
+							$("#exam").val("");
+							$("#exam").text('请选择');
+							$("#user").val("");
+							$("#user").text('请选择');
+							notice.success(msg.msg);
+						},
+						error: function(msg) {
+							notice.error("新增笔试失败" + msg.msg);
+						}
+					})
+
+				})
+
+				$("#returnEXAMList").click(function() {
+					window.open("examManage.html", "iframe")
+				})
+			});
 		</script>
 	</body>
 

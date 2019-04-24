@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * @Auther: zj
  * @Date: 2019/4/17 10:08
@@ -19,4 +21,5 @@ public interface UserRepository extends JpaRepository<User,String>{
 
     Page<User> findAll(Pageable pageable);
 
+    List<User> findAllByOrderByCreateTimeDesc();
 }

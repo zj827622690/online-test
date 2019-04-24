@@ -46,21 +46,26 @@
 				</div>
 			</div>
 		</div>
-
+		<input  style='opacity: 0;position: absolute;' type="text" id="hiddenUrl" />
 		<script type="text/html" id="barDemo">
-			{{# if(d.startTime == null) {}}
 			<a class="layui-btn  layui-btn-xs" lay-event="edit">复制链接</a>
-			{{#} if(d.startTime != null && d.endTime == null) {}}
-			<a class="layui-btn  layui-btn-xs" lay-event="view">查看</a>
-			{{#} if(d.startTime != null && d.endTime != null) {}}
-			<a class="layui-btn  layui-btn-xs" lay-event="playback">回放</a>
-			{{#}}}
+			<a class="layui-btn  layui-btn-xs" lay-event="view">查看答题</a>
+			<a class="layui-btn  layui-btn-xs" lay-event="playback">答题回放</a>
 		</script>
 
 		<script src="../../layui/layui.js"></script>
 		<script src="../js/common.js"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script>
+			
+			
+			
+			layui.config({
+				base: './../dist/'
+			}).extend({
+				notice: 'notice'
+			});
+
 			function formatDate(now) {
 				var year = now.getFullYear();
 				var month = now.getMonth() + 1;
@@ -70,13 +75,28 @@
 				var second = now.getSeconds();
 				return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
 			}
-			layui.use('table', function() {
+			layui.use(['notice', 'table', 'jquery', 'layer'], function() {
+				var notice = layui.notice; // 允许别名 toastr
+				notice.options = {
+					closeButton: true, //显示关闭按钮
+					debug: false, //启用debug
+					positionClass: "toast-top-right", //弹出的位置,
+					showDuration: "300", //显示的时间
+					hideDuration: "1000", //消失的时间
+					timeOut: "2000", //停留的时间
+					extendedTimeOut: "1000", //控制时间
+					showEasing: "swing", //显示时的动画缓冲方式
+					hideEasing: "linear", //消失时的动画缓冲方式
+					iconClass: 'toast-info', // 自定义图标，有内置，如不需要则传空 支持layui内置图标/自定义iconfont类名
+					onclick: null, // 点击关闭回调
+				};
+
 				var table = layui.table;
 				//第一个实例
 				table.render({
 					elem: '#demo',
-					height: 500,
-					url :host()+ "/getUserListAfterPublishWrittenTest?token=" + localStorage.token,
+					height: 312,
+					url: host() + "/getUserListAfterPublishWrittenTest?token=" + localStorage.token,
 					page: true,
 					limit: 5,
 					limits: [5, 10, 15, 20, 25, 30],
@@ -127,8 +147,7 @@
 								fixed: 'right',
 								title: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作',
 								toolbar: '#barDemo',
-								//								templet: titleTpl,
-								width: 180
+								width: 260
 							}
 
 						]
@@ -140,24 +159,47 @@
 					var data = obj.data;
 					//console.log(obj)
 					if(obj.event === 'edit') {
-						console.log(obj.data.testUrl);
-　　							layer.alert(obj.data.testUrl);
+						console.log(obj.data.testUrl);　　
+//						layer.alert(obj.data.testUrl);
+						$("#hiddenUrl").val(obj.data.testUrl);
+						var input = document.querySelector('#hiddenUrl');
+						input.select();
+						
+						if(document.execCommand('copy')) {
+							document.execCommand('copy');
+							notice.success('复制成功');
+						}
+
 					}
 					if(obj.event === 'view') {
 						var data = obj.data;
-						localStorage.setItem("bsusername",data.username);
-						window.open("examView.html?userid="+data.id);
+						if(data.startTime == null) {
+							notice.warning("当前笔试未开始，不能查看");
+							return;
+						}
+						if(data.endTime != null) {
+							notice.warning("当前笔试已结束，不能查看");
+							return;
+						}
+						localStorage.setItem("bsusername", data.username);
+						window.open("examView.html?userid=" + data.id);
 					}
 					if(obj.event === 'playback') {
 						var data = obj.data;
-						localStorage.setItem("bsusername",data.username);
-						window.open("examPlayback.html?userid="+data.id);
-				
+						if(data.startTime == null) {
+							notice.warning("当前笔试未开始，不能回放");
+							return;
+						}
+						if(data.endTime == null) {
+							notice.warning("当前笔试未结束，不能回放");
+							return;
+						}
+						localStorage.setItem("bsusername", data.username);
+						window.open("examPlayback.html?userid=" + data.id);
+
 					}
 				});
 			});
-
-	
 		</script>
 	</body>
 

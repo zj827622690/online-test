@@ -22,45 +22,69 @@
 
 						<div class="layui-card-body">
 							<div class="layui-form">
-							<div class="layui-form-item">
-								<label class="layui-form-label">笔试题：</label>
+								<div class="layui-form-item">
+									<label class="layui-form-label">笔试题：</label>
+								</div>
+								<!--存放内容-->
+								<textarea class="layui-textarea" id="subject" lay-verify="required"></textarea>
+								<div class="site-demo-button" style="margin-top: 40px;">
+									<button class="layui-btn" lay-submit lay-filter="saveExam" id="saveExam">保存笔试题</button>
+									<button class="layui-btn site-demo-layedit" style="float:right;" id="returnExamList">返回列表</button>
+
+								</div>
 							</div>
-							<!--存放内容-->
-							<textarea class="layui-textarea" id="subject" lay-verify="required"></textarea>
-							<div class="site-demo-button" style="margin-top: 40px;">
-								<button class="layui-btn" lay-submit lay-filter="saveExam" id="saveExam">保存笔试题</button>
-							</div>
-						</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<script src="../../layui/layui.js"></script>
-		<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+		<script src="../js/common.js"></script>
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script>
-			layui.use(['form','layer'], function () {
-				var form = layui.form
-					, layer = layui.layer
-
-			$("#saveExam").click(function(){
+			layui.config({
+				base: './../dist/'
+			}).extend({
+				notice: 'notice'
+			});
+			layui.use(['notice', 'form', 'layer'], function() {
+				var form = layui.form,
+					layer = layui.layer;
+				var notice = layui.notice; // 允许别名 toastr
+				notice.options = {
+					closeButton: true, //显示关闭按钮
+					debug: false, //启用debug
+					positionClass: "toast-top-right", //弹出的位置,
+					showDuration: "300", //显示的时间
+					hideDuration: "1000", //消失的时间
+					timeOut: "2000", //停留的时间
+					extendedTimeOut: "1000", //控制时间
+					showEasing: "swing", //显示时的动画缓冲方式
+					hideEasing: "linear", //消失时的动画缓冲方式
+					iconClass: 'toast-info', // 自定义图标，有内置，如不需要则传空 支持layui内置图标/自定义iconfont类名
+					onclick: null, // 点击关闭回调
+				};
+				$("#saveExam").click(function() {
 					$.ajax({
 						type: 'post',
-						url: 'http://localhost:8080/addNewQuestion',
+						url: host() + '/addNewQuestion',
 						data: {
 							subject: $("#subject").val(),
 							token: localStorage.getItem("token")
 						},
 						dataType: 'json',
 						async: true,
-						success: function (res) {					
-								layer.alert(res.msg);
+						success: function(res) {
+							notice.success(res.msg);
 						},
-						error: function (res) {
-							layer.alert(res.msg);
+						error: function(res) {
+							notice.error(res.msg);
 						}
 					})
 				});
+				$("#returnExamList").click(function() {
+					window.open("examList.html", "iframe")
+				})
 			});
 		</script>
 	</body>

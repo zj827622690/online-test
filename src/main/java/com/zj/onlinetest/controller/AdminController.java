@@ -237,7 +237,8 @@ public class AdminController {
         List<User> lists=userService.selectAllUser();
         ArrayList<User> userArrayList = new ArrayList<>(  );
         for (User exc :lists) {
-            if (!Objects.equals( exc.getRole(), RoleEnum.ROLE_ADMIN.getMessage() )) {
+            if (!Objects.equals( exc.getRole(), RoleEnum.ROLE_ADMIN.getMessage())
+                    &&Objects.equals( exc.getQuestions(),null)) {
                 userArrayList.add( exc );
             }
         }
@@ -295,6 +296,8 @@ public class AdminController {
         }
 
         commonService.playbackAnswer( userId,questionId,room);//异步
+
+        System.out.println( "序结束" );
 
         return ResultVoUtil.success(CommonEnum.PLAYBACKTESTSUCCESS.getMessage(),null);
     }

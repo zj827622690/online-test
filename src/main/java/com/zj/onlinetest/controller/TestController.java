@@ -3,17 +3,15 @@ package com.zj.onlinetest.controller;
 import com.zj.onlinetest.Repository.UserRepository;
 import com.zj.onlinetest.domain.User;
 import com.zj.onlinetest.rabbitmq.Sender;
-import com.zj.onlinetest.utils.JsonUtils;
 import com.zj.onlinetest.utils.RandomUtils;
 import com.zj.onlinetest.utils.TimeUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 
 /**
@@ -69,5 +67,9 @@ public class TestController {
 //        sender.send( JsonUtils.objectToJson( mqTask  ) );
 //        return "111";
 //    }
+
+
+
+
 
 }
