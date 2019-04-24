@@ -375,5 +375,71 @@ public class AdminController {
         return ResultVoUtil.success(  CommonEnum.GETSELFQUESTIONSSUCCESS.getMessage(),questionArrayList);
     }
 
+    /**
+     * 删除 指定笔试者
+     * @param userId
+     * @param request
+     * @return
+     */
+    @GetMapping("/removeUser")
+    public ResultVo removeUser(@RequestParam("userId") String userId,
+                               HttpServletRequest request) {
+
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+
+        if (StringUtils.isBlank( userId )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PARAMERSERROR.getMessage());
+        }
+
+        User nowUser = userService.selectOneById( userId );
+
+        if (nowUser.getQuestions()!=null) {
+            return ResultVoUtil.error(  HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.USERHASTAKEDTEST.getMessage());
+        }
+
+        userService.deleteUser( nowUser );
+
+        return ResultVoUtil.success(CommonEnum.DELETEUSERSUCCESS.getMessage(),null);
+    }
+
+    /**
+     * 编辑 指定笔试题
+     * @param questionId
+     * @param request
+     * @return
+     */
+    @GetMapping("/changeQuestion")
+    public ResultVo changeQuestion(@RequestParam("questionId") String questionId,
+                                   @RequestParam("content") String content,
+                                   HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+
+        if (StringUtils.isBlank( questionId )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PARAMERSERROR.getMessage());
+        }
+
+        Question question = questService.selectOneById( questionId );
+        question.setSubject( content );
+        questService.saveOrUpdate( question );
+
+        return ResultVoUtil.success( CommonEnum.CHANGEQUESTIONSUCCESS.getMessage(),null );
+
+    }
+
 
 }

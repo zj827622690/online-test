@@ -81,6 +81,7 @@ public class UserController
      * @return
      */
     @GetMapping("/getSelfInfo")
+    @CrossOrigin
     public ResultVo getSelfInfo(HttpServletRequest request) {
         String nowName = userRoleAuthentication.
                 getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_USER.getMessage());

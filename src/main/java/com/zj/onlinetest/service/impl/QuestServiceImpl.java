@@ -50,4 +50,10 @@ public class QuestServiceImpl implements QuestService{
         Pageable pageable = PageRequest.of( pageIndex,5);
         return questionRepository.findAllByOrderByCreateTimeDesc( pageable).getContent();
     }
+
+    @Override
+    public Question saveOrUpdate(Question question) {
+        questionRepository.save( question );
+        return null;
+    }
 }

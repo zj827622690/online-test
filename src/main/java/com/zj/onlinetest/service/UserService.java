@@ -27,4 +27,6 @@ public interface UserService {
 
     List<User> selectAllUser();
 
+    void deleteUser(User user);
+
 }

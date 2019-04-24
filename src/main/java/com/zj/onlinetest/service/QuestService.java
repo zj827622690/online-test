@@ -19,4 +19,6 @@ public interface QuestService {
     List<Question> selectAll();
 
     List<Question> selectAll(Integer pageIndex);
+
+    Question saveOrUpdate(Question question);
 }

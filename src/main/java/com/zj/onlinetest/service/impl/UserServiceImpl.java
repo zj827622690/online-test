@@ -69,4 +69,11 @@ public class UserServiceImpl implements UserService{
     public List<User> selectAllUser() {
         return userRepository.findAllByOrderByCreateTimeDesc();
     }
+
+    @Override
+    public void deleteUser(User user) {
+        userRepository.delete( user );
+    }
+
+
 }
