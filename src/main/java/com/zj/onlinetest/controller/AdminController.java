@@ -382,6 +382,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/removeUser")
+    @CrossOrigin
     public ResultVo removeUser(@RequestParam("userId") String userId,
                                HttpServletRequest request) {
 
@@ -417,6 +418,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/changeQuestion")
+    @CrossOrigin
     public ResultVo changeQuestion(@RequestParam("questionId") String questionId,
                                    @RequestParam("content") String content,
                                    HttpServletRequest request) {
@@ -448,6 +450,7 @@ public class AdminController {
      * @return
      */
     @GetMapping("/deleteQuestion")
+    @CrossOrigin
     public ResultVo deleteQuestion(@RequestParam("questionId") String questionId,
                                    HttpServletRequest request) {
         String nowName = userRoleAuthentication.
@@ -465,12 +468,15 @@ public class AdminController {
         ArrayList<String> arrayList = new ArrayList<>(  );
         List<User> users = userService.selectAllUser();
         for (User user:users) {
-            String[] strs = user.getQuestions().split( "#");
-            for (String str: strs) {
-                if(!Objects.equals( str, "" )) {
-                    arrayList.add( str );
+            if (user.getQuestions()!=null) {
+                String[] strs = user.getQuestions().split( "#");
+                for (String str: strs) {
+                    if(!Objects.equals( str, "" )) {
+                        arrayList.add( str );
+                    }
                 }
             }
+
         }
 
         if (arrayList.contains( questionId )) {
