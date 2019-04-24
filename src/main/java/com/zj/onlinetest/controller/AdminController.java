@@ -441,5 +441,47 @@ public class AdminController {
 
     }
 
+    /**
+     * 删除 指定笔试题
+     * @param questionId
+     * @param request
+     * @return
+     */
+    @GetMapping("/deleteQuestion")
+    public ResultVo deleteQuestion(@RequestParam("questionId") String questionId,
+                                   HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+
+        if (StringUtils.isBlank( questionId )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PARAMERSERROR.getMessage());
+        }
+        ArrayList<String> arrayList = new ArrayList<>(  );
+        List<User> users = userService.selectAllUser();
+        for (User user:users) {
+            String[] strs = user.getQuestions().split( "#");
+            for (String str: strs) {
+                if(!Objects.equals( str, "" )) {
+                    arrayList.add( str );
+                }
+            }
+        }
+
+        if (arrayList.contains( questionId )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.THISQUESTIONHASPUBLISHED.getMessage());
+        }
+
+        Question question = questService.selectOneById( questionId );
+        questService.deleteQuestion( question );
+        return ResultVoUtil.success( CommonEnum.DELETEQUESTIONSUCCESS.getMessage(), null);
+    }
+
 
 }

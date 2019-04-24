@@ -21,4 +21,6 @@ public interface QuestService {
     List<Question> selectAll(Integer pageIndex);
 
     Question saveOrUpdate(Question question);
+
+    void deleteQuestion(Question question);
 }

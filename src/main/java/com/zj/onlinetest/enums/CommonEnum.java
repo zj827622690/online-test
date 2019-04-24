@@ -17,6 +17,7 @@ public enum  CommonEnum {
     PARAMERSERROR(-4,"参数校验不通过"),
     USERHASWDTAKEEDTEST(-5,"您已经参加过笔试，不能再次参加"),
     USERHASTAKEDTEST(-6,"用户已发表笔试，没有权限删除"),
+    THISQUESTIONHASPUBLISHED(-7,"该笔试题已被发布，没有权限删除"),
 
 
     SUCCESS(1,"true"),
@@ -35,6 +36,7 @@ public enum  CommonEnum {
     ENDTESTSUCCESS(14,"结束答题"),
     DELETEUSERSUCCESS(15,"删除用户成功"),
     CHANGEQUESTIONSUCCESS(16,"编辑问题完成"),
+    DELETEQUESTIONSUCCESS(17,"删除问题成功"),
     ;
 
 

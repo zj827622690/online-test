@@ -56,4 +56,9 @@ public class QuestServiceImpl implements QuestService{
         questionRepository.save( question );
         return null;
     }
+
+    @Override
+    public void deleteQuestion(Question question) {
+        questionRepository.delete( question );
+    }
 }
