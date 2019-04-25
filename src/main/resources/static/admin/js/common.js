@@ -1,3 +1,3 @@
 var host=function (){
-	return "http://q5dirx.natappfree.cc";
+	return "http://localhost:8080";
 }

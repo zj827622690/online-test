@@ -12,8 +12,9 @@
 		<style>
 			.timer {
 				text-align: center;
-				color: red;
+				color: #1E9FFF;
 				font-size: 24px;
+				font-family:"楷体";
 			}
 		</style>
 	</head>
@@ -25,21 +26,12 @@
 		<div style="padding: 20px; background-color: #F2F2F2;">
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
-					<div class="layui-card">
-						<div class="layui-card-header">笔试答题</div>
-						<div class="timer">
+					<div class="layui-card" >
+						<div class="layui-card-header">笔试查看</div>
+						<div class="timer" >
 							FNST在线笔试，当前答题者：<span id="username"></span>
 						</div>
-						<!--<div class="timer">
-							<label>计时：</label>
-							<span id="hours">00</span>
-							<span>:</span>
-							<span id="minute">00</span>
-							<span>:</span>
-							<span id="second">00</span>
-						</div>-->
 						<br />
-
 						<hr class="layui-bg-orange">
 						<div class="layui-card-body">
 							<div id="EXAM">
@@ -116,7 +108,7 @@
 						for(var i = 0; i < msg.data.length; i++) {
 							console.log(msg.data[i].id);
 							var j = i + 1;
-							var h = '<div class="layui-form-item "><div class="layui-form-item "><span>第' + j + '题：</span><span class="question"id="quesion' + j + '">' + msg.data[i].subject + '</span></div></div><hr class="layui-bg-grey"><div class="layui-form-item"><span>答题：</span><div class="layui-textarea" id="' + msg.data[i].id + '" style="height: 300px;" ></div><hr class="layui-bg-red"></div>';
+							var h = '<div class="layui-form-item "><div class="layui-form-item "><span>第' + j + '题：</span><span class="question"id="quesion' + j + '">' + msg.data[i].subject + '</span></div></div><hr class="layui-bg-grey"><div class="layui-form-item"><span>答题：</span><div class="layui-textarea" id="' + msg.data[i].id + '" style="height: 300px;overflow:scroll;" ></div><hr class="layui-bg-red"></div>';
 							exam.append(h);
 						}
 					}
@@ -125,7 +117,6 @@
 					window.close();
 				})
 			});
-
 			window.onload = function() {
 				conectWebSocket(userid, serverUrl);
 

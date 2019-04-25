@@ -12,8 +12,9 @@
 		<style>
 			.timer {
 				text-align: center;
-				color: red;
+				color: #1E9FFF;
 				font-size: 24px;
+				font-family:"楷体";
 			}
 		</style>
 	</head>
@@ -28,7 +29,7 @@
 					<div class="layui-card">
 						<div class="layui-card-header">笔试答题</div>
 						<div class="timer">
-							FNST在线笔试，当前答题者：<span id="username"></span>
+							     FNST在线笔试，当前答题者：<span id="username"></span>
 						</div>
 						<div class="timer" id="timer">
 
@@ -38,19 +39,6 @@
 						<hr class="layui-bg-orange">
 						<div class="layui-card-body">
 							<div id="EXAM">
-								<!--<div class="layui-form-item">
-									<div class="layui-form-item">
-										<span>第1题：</span><span class="question"id="quesion1"></span>
-									</div>
-								</div>
-								<hr class="layui-bg-grey">
-								<div class="layui-form-item">
-									<span>答题：</span>
-									<textarea class="layui-textarea answer" id="answer1" style="height: 300px;">
-             		 		 		</textarea>
-									<hr class="layui-bg-red">
-								</div>-->
-
 							</div>
 							<input type="hidden" id="listid" />
 							<div class="site-demo-button" style="margin-top: 40px; text-align: right;">
@@ -62,7 +50,6 @@
 				</div>
 			</div>
 		</div>
-		<button data-method="notice" class="layui-btn">示范一个公告层</button>
 		<script src="../../layui/layui.js"></script>
 		<script src="../js/common.js"></script>
 		<script src="../../js/sockjs.min.js"></script>
@@ -70,7 +57,7 @@
 		<script>
 			var minute,
 				second;
-			var maxtime = 15; //一个小时，按秒计算，自己调整!  
+			var maxtime = 60 * 60; //一个小时，按秒计算，自己调整!  
 			var list = [];
 			var listmsg = [];
 			var listVal = [];
@@ -157,43 +144,27 @@
 						});
 					},
 					notice: function() {
-						//示范一个公告层
 						layer.open({
 							type: 1,
-							title: false //不显示标题栏
-								,
+							title: false,
 							closeBtn: false,
 							area: '300px;',
 							shade: 0.8,
-							id: 'LAY_layuipro' //设定一个id，防止重复弹出
-								,
+							id: 'LAY_layuipro',
 							btnAlign: 'c',
-							moveType: 1 //拖拽模式，0或者1
-								,
-							content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">答题结束，题目已提交</div>',
-							success: function(layero) {
-								var btn = layero.find('.layui-layer-btn');
-								btn.find('.layui-layer-btn0').attr({
-									href: 'http://www.layui.com/',
-									target: '_blank'
-								});
-							}
+							moveType: 1,
+							content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">答题结束，题目已提交</div>'
 						});
 					}
 				};
-
-				$(' .layui-btn').on('click', function() {
-					var othis = $(this);
-					active["notice"] ? active["notice"].call(this, othis) : '';
-				});
 
 				var timer = null;
 				var timer2 = null;
 				if(localStorage.getItem("maxtime") != null) {
 					maxtime = localStorage.getItem("maxtime");
+                    localStorage.removeItem("maxtime");
 				}
 				timer = setInterval(function() {
-					console.log(maxtime);
 					if(maxtime >= 0) {
 						minutes = Math.floor(maxtime / 60);
 						seconds = Math.floor(maxtime % 60);
@@ -202,6 +173,8 @@
 						if(maxtime == 5 * 60) alert("还剩5分钟");
 						--maxtime;
 					} else {
+						clearInterval(timer);
+						clearInterval(timer2);
 						$.ajax({
 							type: "get",
 							url: host() + "/endTest",
@@ -210,10 +183,27 @@
 							},
 							async: false,
 							success: function(res) {
-								localStorage.clear();
+								maxtime = 60*60;
+								localStorage.removeItem("maxtime");
+								for(var i = 0; i < listmsg.length; i++) {
+								    listmsg[i]="";
+								    listVal[i]="";
+									localStorage.removeItem(listmsg[i]);
+								}
+								localStorage.removeItem('token2');
 								$("#commit").remove();
-								clearInterval(timer);
-								clearInterval(timer2);
+								document.onkeydown = function(e) {
+									var ev = window.event || e;
+									var code = ev.keyCode || ev.which;
+									if(code == 116) {
+										ev.keyCode ? ev.keyCode = 0 : ev.which = 0;
+										cancelBubble = true;
+										return false;
+									}
+								} //禁止f5刷新
+								document.oncontextmenu = function() {
+									return false
+								};
 							}
 						});
 						var othis = $(this);
@@ -244,13 +234,13 @@
 								]
 							}));
 							layedit.setContent(list[i], localStorage.getItem(listmsg[i]));
+                            localStorage.removeItem(listmsg[i]);
 						}
 					},
 					error: function(msg) {}
 				})
 
 				timer2 = setInterval(function() {
-
 					for(var i = 0; i < listmsg.length; i++) {
 						if(listVal[i] != layedit.getContent(list[i])) {
 							sendMessage(layedit.getContent(list[i]), listmsg[i]);
@@ -269,31 +259,49 @@
 						},
 						async: false,
 						success: function(res) {
-							localStorage.clear();
+						    maxtime=60*60;
+
+							localStorage.removeItem('maxtime');
+							for(var i = 0; i < listmsg.length; i++) {
+							    listmsg[i]="";
+                                listVal[i]="";
+								localStorage.removeItem(listmsg[i]);
+							}
+							localStorage.removeItem('token2');
 							$("#commit").remove();
 							clearInterval(timer);
 							clearInterval(timer2);
+							document.onkeydown = function(e) {
+									var ev = window.event || e;
+									var code = ev.keyCode || ev.which;
+									if(code == 116) {
+										ev.keyCode ? ev.keyCode = 0 : ev.which = 0;
+										cancelBubble = true;
+										return false;
+									}
+								} //禁止f5刷新
+								document.oncontextmenu = function() {
+									return false
+								};
 						}
 					});
 					var othis = $(this);
-					active["notice2"] ? active["notice2"].call(this, othis) : '';
+					active["notice"] ? active["notice"].call(this, othis) : '';
 				});
 
 			});
 
 			function myFunction() {
-								localStorage.setItem("maxtime", maxtime);
+			    if(maxtime!=3600){
+                    localStorage.setItem("maxtime", maxtime);
+				}
+
 				for(var i = 0; i < listmsg.length; i++) {
-					localStorage.setItem(listmsg[i], listVal[i]);
+			        if(listVal[i]!=""){
+                        localStorage.setItem(listmsg[i], listVal[i]);
+					}
 				}
 			}
-			//			 window.onbeforeunload = confirmExit;
-			//			 function confirmExit() { 
-			//			 	localStorage.setItem("maxtime", maxtime);
-			//				for(var i = 0; i < listmsg.length; i++) {
-			//					localStorage.setItem(listmsg[i], listVal[i]);
-			//				} 
-			//			 }
 			window.onload = function() {
 				this.conectWebSocket(userid, serverUrl);
 			}

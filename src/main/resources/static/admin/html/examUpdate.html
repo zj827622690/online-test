@@ -18,31 +18,28 @@
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
 					<div class="layui-card">
-						<div class="layui-card-header">笔试者新增</div>
+						<div class="layui-card-header">笔试修改</div>
 
 						<div class="layui-card-body">
 							<div class="layui-form">
 								<div class="layui-form-item">
-									<label class="layui-form-label">笔试者：</label>
-									<div class="layui-input-block">
-										<input type="text" id="username" name="username" lay-verify="required" autocomplete="off" placeholder="请输入笔试者名" class="layui-input">
-									</div>
+									<label class="layui-form-label">笔试题：</label>
 								</div>
-
-								<div class="site-demo-button" style="margin-top: 40px; ">
-									<button class="layui-btn" lay-submit lay-filter="saveUser" id="saveUser">保存</button>
-									<button class="layui-btn site-demo-layedit" style="float:right;" id="returnUserList">返回列表</button>
+								<!--存放内容-->
+								<textarea class="layui-textarea" id="subject" lay-verify="required"></textarea>
+								<div class="site-demo-button" style="margin-top: 40px;">
+									<button class="layui-btn" lay-submit lay-filter="saveExam" id="saveExam">保存笔试题</button>
+									<button class="layui-btn site-demo-layedit" style="float:right;" id="returnExamList">返回列表</button>
 
 								</div>
 							</div>
-
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<script src="../../layui/layui.js"></script> 
+		<input type="hidden" id="questionId" />
+		<script src="../../layui/layui.js"></script>
 		<script src="../js/common.js"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script>
@@ -51,33 +48,41 @@
 			}).extend({
 				notice: 'notice'
 			});
-			layui.use(['notice', 'layer'], function() {
+			layui.use(['notice', 'form', 'layer'], function() {
+				var form = layui.form,
+					layer = layui.layer;
 				var notice = layui.notice; // 允许别名 toastr
-				var layer = layui.layer;
-				$("#saveUser").click(function() {
+				$("#subject").val(localStorage.getItem("subject"));
+				$("#questionId").val(localStorage.getItem("questionId"));
+				$("#saveExam").click(function() {
 					$.ajax({
 						type: 'post',
-						url: host()+'/addNewUser',
+						url: host() + '/changeQuestion',
 						data: {
-							username: $("#username").val(),
+							content: $("#subject").val(),
+							questionId: $("#questionId").val(),
 							token: localStorage.getItem("token")
 						},
 						dataType: 'json',
 						async: true,
 						success: function(res) {
+							localStorage.removeItem("questionId");
+							localStorage.removeItem("subject");
 							notice.success(res.msg);
 						},
 						error: function(res) {
+							localStorage.removeItem("questionId");
+							localStorage.removeItem("subject");
 							notice.error(res.msg);
 						}
 					})
+				});
+				$("#returnExamList").click(function() {
+					localStorage.removeItem("questionId");
+					localStorage.removeItem("subject");
+					window.open("examList.html", "iframe")
 				})
-
-				$("#returnUserList").click(function() {
-					window.open("userList.html", "iframe")
-				})
-			})
-
+			});
 		</script>
 	</body>
 

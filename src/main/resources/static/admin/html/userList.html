@@ -27,14 +27,6 @@
 						<div>
 							<div class="layui-card-body">
 								<div class="layui-form-item">
-									<!--<div class="layui-inline">
-										<label class="layui-form-label">笔试者:</label>
-										<div class="layui-input-inline">
-											<input type="text" name="text" name="queryBut" placeholder="请输入需要查询的笔试者" lay-verify="required" autocomplete="off" class="layui-input">
-										</div>
-									</div>
-									<button class="layui-btn layui-btn-warm layui-btn-radius">点击查询</button>
-									-->
 									<div>
 										<button class="layui-btn " id="addUser"><a style="color:white" > <i class="layui-icon">&#xe608;</i>新增笔试者</a></button>
 									</div>
@@ -55,7 +47,11 @@
 		<script src="../js/common.js"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script>
-
+			layui.config({
+				base: './../dist/'
+			}).extend({
+				notice: 'notice'
+			});
 			function formatDate(now) {
 				var year = now.getFullYear();
 				var month = now.getMonth() + 1;
@@ -66,7 +62,8 @@
 				return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
 			}
 
-			layui.use('table', function() {
+			layui.use(['notice','table'], function() {
+				var notice = layui.notice; 
 				var table = layui.table;
 				//第一个实例
 				table.render({
@@ -92,6 +89,11 @@
 									var d = new Date(d.createTime);
 									return formatDate(d);
 								}
+							}, {
+								fixed: 'right',
+								title: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作',
+								toolbar: '#barDemo',
+								width: 180
 							}
 
 						]
@@ -103,9 +105,34 @@
 					var data = obj.data;
 					//console.log(obj)
 					if(obj.event === 'del') {
-						layer.confirm('真的删除数据吗', function(index) {
-							obj.del();
-							layer.close(index);
+						layer.confirm('真的删除数据吗',
+							{
+							    offset:"220px"
+							},
+							function(index) {
+							$.ajax({
+								type: 'get',
+								url: host() + '/removeUser?token=' + localStorage.token,
+								data:{
+									userId:data.id
+								}, 
+								dataType: 'json',
+								async: false,
+								success: function(msg) {
+                                    if(msg.code!=200){
+                                        notice.warning(msg.msg);
+                                        layer.close(index);
+                                        return;
+                                    }
+									notice.success("删除用户成功");
+									obj.del();
+									layer.close(index);
+								},
+								error: function(msg) {
+									notice.error("删除用户失败");
+                                    layer.close(index);
+								}
+							})
 						});
 					}
 				});

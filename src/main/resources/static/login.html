@@ -78,6 +78,7 @@
 					},
 					dataType: 'json',
 					async: true,
+//					crossDomain:true,
 					success: function(msg) {
 						notice.success("登陆成功");
 						localStorage.setItem("token", msg.data);

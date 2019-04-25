@@ -12,8 +12,9 @@
 		<style>
 			.timer {
 				text-align: center;
-				color: red;
+				color: #1E9FFF;
 				font-size: 24px;
+				font-family: "楷体";
 			}
 		</style>
 	</head>
@@ -39,17 +40,18 @@
 									<option value="">请选择</option>
 								</select>
 							</div>
-							<button class="layui-btn " id="playback">查看回放</button>
+							<button class="layui-btn " id="playback">查看答题回放</button>
+							<button class="layui-btn " id="viewAnwser">查看最终结果</button>
 						</div>
 						<hr class="layui-bg-orange">
 						<div class="layui-form-item" style="margin-top:10px">
 							<div class="layui-form-item ">
-								<span class="layui-form-label" id="question"> </span>
+								<span class="" id="question"> </span>
 							</div>
 						</div>
 						<hr class="layui-bg-grey">
 						<div class="layui-form-item">
-							<div class="layui-textarea" style="height: 300px;" id="answer">
+							<div class="layui-textarea" style="height: 300px;overflow:scroll;" id="answer">
 
 							</div>
 							<hr class="layui-bg-red">
@@ -105,34 +107,22 @@
 				});
 			}
 
+			
 			function disconnect() {
 				//断开连接的方法
 				if(this.stompClient !== undefined) {
 					this.stompClient.disconnect();
-					alert("Disconnected");
-				} else {
-					alert("当前没有连接websocket")
 				}
+
 				this.stompClient = undefined;
 			}
+
+			
 
 			layui.use(['notice', 'form'], function() {
 				var form = layui.form;
 				form.render();
 				var notice = layui.notice; // 允许别名 toastr
-				notice.options = {
-					closeButton: true, //显示关闭按钮
-					debug: false, //启用debug
-					positionClass: "toast-top-right", //弹出的位置,
-					showDuration: "300", //显示的时间
-					hideDuration: "1000", //消失的时间
-					timeOut: "2000", //停留的时间
-					extendedTimeOut: "1000", //控制时间
-					showEasing: "swing", //显示时的动画缓冲方式
-					hideEasing: "linear", //消失时的动画缓冲方式
-					iconClass: 'toast-info', // 自定义图标，有内置，如不需要则传空 支持layui内置图标/自定义iconfont类名
-					onclick: null, // 点击关闭回调
-				};
 				var $ = layui.jquery;
 				$("#username").text(localStorage.getItem("bsusername"));
 				$.ajax({
@@ -161,10 +151,15 @@
 				})
 
 				$("#playback").click(function() {
+
+					if(stompClient == undefined) {
+						conectWebSocket(userid, serverUrl);
+					}
+
 					var questionId = $("#exam").val();
 					var subject = $("#exam").find("option:selected").text();
 					if(subject == "请选择") {
-						notice.warning("请先选择笔试题"); 
+						notice.warning("请先选择笔试题");
 						return;
 					}
 					$("#question").text(subject);
@@ -182,15 +177,46 @@
 						success: function(msg) {
 
 						},
-						error: function(msg) {}
+						error: function(msg) {
+							notice.ERROR("获取答题回放信息失败");
+						}
 					})
+				})
 
+				$("#viewAnwser").click(function() {
+					if(stompClient != undefined) {
+						disconnect();
+					}
+					var questionId = $("#exam").val();
+					var subject = $("#exam").find("option:selected").text();
+					if(subject == "请选择") {
+						notice.warning("请先选择笔试题");
+						return;
+					}
+					$("#question").text(subject);
+					$.ajax({
+						type: 'get',
+						url: host() + '/getTestResult',
+						data: {
+							userId: userid,
+							token: localStorage.token,
+							questionId: questionId,
+						},
+						dataType: 'json',
+						async: false,
+						success: function(msg) {
+							document.getElementById("answer").innerHTML = msg.data.answer;
+						},
+						error: function(msg) {
+							notice.ERROR("获取答题信息失败");
+						}
+					})
 				})
 
 			});
 
 			window.onload = function() {
-				conectWebSocket(userid, serverUrl);
+//				conectWebSocket(userid, serverUrl);
 			}
 		</script>
 	</body>

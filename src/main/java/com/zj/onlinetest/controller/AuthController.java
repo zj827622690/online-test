@@ -55,6 +55,11 @@ public class AuthController {
         return ResultVoUtil.success( CommonEnum.LOGINSUCCEES.getMessage(),token );
     }
 
+    /**
+     * 初始化默认跳转页面
+     * @param response
+     * @throws IOException
+     */
     @GetMapping("/")
     @CrossOrigin
     public void index(HttpServletResponse response) throws IOException {

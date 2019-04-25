@@ -63,9 +63,6 @@
 						<div class="laylayui-form-itemui-form-item" id="urlList">
 							<label class="layui-form-label">生成的笔试URL：</label>
 
-							<!--<div class="layui-input-block">
-								<input type="text" name="URL" style="border:0" readonly="readonly"   lay-verify="title" autocomplete="off"  class="layui-input">
-							</div>-->
 						</div>
 
 						<div class="site-demo-button" style="margin-top: 80px; ">
@@ -96,20 +93,6 @@
 				var form = layui.form;
 				form.render();
 				var notice = layui.notice; // 允许别名 toastr
-				notice.options = {
-					closeButton: true, //显示关闭按钮
-					debug: false, //启用debug
-					positionClass: "toast-top-right", //弹出的位置,
-					showDuration: "300", //显示的时间
-					hideDuration: "1000", //消失的时间
-					timeOut: "2000", //停留的时间
-					extendedTimeOut: "1000", //控制时间
-					showEasing: "swing", //显示时的动画缓冲方式
-					hideEasing: "linear", //消失时的动画缓冲方式
-					iconClass: 'toast-info', // 自定义图标，有内置，如不需要则传空 支持layui内置图标/自定义iconfont类名
-					onclick: null, // 点击关闭回调
-				};
-
 				$.ajax({
 					type: 'get',
 					url: host() + '/getAllTestUser?token=' + localStorage.token,
@@ -146,7 +129,6 @@
 				$(".addEXAM").click(function() {
 					var flag = 0;
 					if($("#exam").val() != "") {
-
 						$("#BST span").each(function() {
 							var BSTID = $(this).attr("key");
 							if(BSTID == $("#exam").val()) {
