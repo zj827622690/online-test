@@ -37,6 +37,7 @@ public enum  CommonEnum {
     DELETEUSERSUCCESS(15,"删除用户成功"),
     CHANGEQUESTIONSUCCESS(16,"编辑问题完成"),
     DELETEQUESTIONSUCCESS(17,"删除问题成功"),
+    GETTHELASTONEABOUTRESULTSUCCESS(18,"获取最终结果成功"),
     ;
 
 

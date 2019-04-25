@@ -14,4 +14,6 @@ public interface RecordRepository extends JpaRepository<Record,String>{
 
     List<Record> findAllByUserIdAndQuestionIdOrderByCreateTimeAsc(String userId,String questionId);
 
+    List<Record> findAllByUserIdAndQuestionIdOrderByCreateTimeDesc(String userId,String questionId);
+
 }

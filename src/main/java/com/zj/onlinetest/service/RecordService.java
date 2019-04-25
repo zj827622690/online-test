@@ -12,4 +12,6 @@ public interface RecordService {
 
     Void saveOrUpdate(Record record);
 
+    Record selectTheLastOne(String userId, String questionId);
+
 }

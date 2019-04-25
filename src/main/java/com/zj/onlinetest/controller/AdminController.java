@@ -7,6 +7,7 @@ import com.zj.onlinetest.enums.CommonEnum;
 import com.zj.onlinetest.enums.RoleEnum;
 import com.zj.onlinetest.service.CommonService;
 import com.zj.onlinetest.service.QuestService;
+import com.zj.onlinetest.service.RecordService;
 import com.zj.onlinetest.service.UserService;
 import com.zj.onlinetest.utils.*;
 import com.zj.onlinetest.vo.ResultVo;
@@ -44,6 +45,9 @@ public class AdminController {
 
     @Autowired
     CommonService commonService;
+
+    @Autowired
+    RecordService recordService;
 
     @Value("${local.url}")
     private String url;
@@ -417,7 +421,7 @@ public class AdminController {
      * @param request
      * @return
      */
-    @GetMapping("/changeQuestion")
+    @PostMapping("/changeQuestion")
     @CrossOrigin
     public ResultVo changeQuestion(@RequestParam("questionId") String questionId,
                                    @RequestParam("content") String content,
@@ -476,7 +480,6 @@ public class AdminController {
                     }
                 }
             }
-
         }
 
         if (arrayList.contains( questionId )) {
@@ -487,6 +490,35 @@ public class AdminController {
         Question question = questService.selectOneById( questionId );
         questService.deleteQuestion( question );
         return ResultVoUtil.success( CommonEnum.DELETEQUESTIONSUCCESS.getMessage(), null);
+    }
+
+    /**
+     * 获取笔试题 最终结果
+     * @param userId
+     * @param questionId
+     * @param request
+     * @return
+     */
+    @GetMapping("/getTestResult")
+    @CrossOrigin
+    public ResultVo getTestResult(@RequestParam("userId") String userId,
+                                  @RequestParam("questionId") String questionId,
+                                  HttpServletRequest request) {
+        String nowName = userRoleAuthentication.
+                getUsernameAndAutenticateUserRoleFromRequest( request, RoleEnum.ROLE_ADMIN.getMessage());
+
+        if (Objects.equals(nowName, "false" )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PERRMISSIONERROR.getMessage());
+        }
+
+        if (StringUtils.isBlank( questionId )||StringUtils.isBlank( userId )) {
+            return ResultVoUtil.error( HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    CommonEnum.PARAMERSERROR.getMessage());
+        }
+
+        return ResultVoUtil.success(CommonEnum.GETTHELASTONEABOUTRESULTSUCCESS.getMessage(),
+                recordService.selectTheLastOne( userId,questionId ) );
     }
 
 
